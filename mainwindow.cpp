@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include <QDebug>
 #include <QTimer>
+#include <QKeyEvent>
 
 mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent)
 {
+    this->setWindowTitle("FYCYC-Aviation Instruments X");
     this->resize(QSize(1600,900));    
 
     SetTimmer();
@@ -31,23 +33,24 @@ void mainwindow::paintEvent(QPaintEvent *event)
     {
         //this->setWindowFlags(Qt::);
     }
-
-
 }
 void mainwindow::SetRightMenu()
 {
     QAction *paConfiguration=new QAction("Configuration",this);
-    QAction *paDisplayMode=new QAction("Display Mode F12",this);
+    QAction *paDisplayMode=new QAction("Display Mode    F12",this);
     QAction *paTitle=new QAction("TitleBar",this);
+    QAction *paFullScreen=new QAction( "FullScreen      F11",this);
 
     addAction(paConfiguration);
     addAction(paDisplayMode);
     addAction(paTitle);
+    addAction(paFullScreen);
 
 
     connect(paConfiguration,SIGNAL(triggered()),this,SLOT(close()));
     connect(paDisplayMode,SIGNAL(triggered()),this,SLOT(ChangeDisplayMode()));
     connect(paTitle,SIGNAL(triggered()),this,SLOT(ChangeTitleBar()));
+    connect(paFullScreen,SIGNAL(triggered()),this,SLOT(ChangeFullScreen()));
 
     setContextMenuPolicy(Qt::ActionsContextMenu);
 }
@@ -70,9 +73,35 @@ void mainwindow::ChangeTitleBar()
         show();
     }
 }
+void mainwindow::ChangeFullScreen()
+{
+    fullScreen=1-fullScreen;
+    if(fullScreen==0)
+    {
+        showNormal();
+    }
+    else
+    {
+        showFullScreen();
+    }
+}
 void mainwindow::SetTimmer()
 {
     QTimer *timer=new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(update()));
     timer->start(1000/rate_Frame);
+}
+void mainwindow::keyPressEvent(QKeyEvent *event)
+{
+    if(Qt::Key_F12==event->key())
+    {
+        ChangeDisplayMode();
+        return;
+    }
+    if(Qt::Key_F11==event->key())
+    {
+        ChangeFullScreen();
+        return;
+    }
+
 }
