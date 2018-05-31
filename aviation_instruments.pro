@@ -25,12 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    airspeed.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    tryy.cpp
 
 HEADERS += \
-    airspeed.h \
-    mainwindow.h
+    mainwindow.h \
+    tryy.h
 
 FORMS += \
         mainwindow.ui

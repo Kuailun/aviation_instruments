@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QPainter>
+#include "tryy.h"
 
 class mainwindow : public QMainWindow
 {
@@ -25,6 +26,8 @@ private:
     int position_y;                             //窗口y坐标
     int size_x;                                 //窗口x大小
     int size_y;                                 //窗口y大小
+
+    Tryy *tt;
 
     int rate_Data=10;                           //数据频率
     int rate_Frame=40;                          //绘制频率

@@ -6,8 +6,11 @@
 mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent)
 {
     this->setWindowTitle("FYCYC-Aviation Instruments X");
-    this->resize(QSize(1600,900));    
-
+    this->resize(QSize(1600,900));
+    tt=new Tryy(this);
+    tt->move(100,50);
+    tt->resize(100,100);
+    tt->show();
     SetTimmer();
     SetRightMenu();
 
