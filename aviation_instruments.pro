@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     mainwindow.cpp \
-    tryy.cpp
+    instrument.cpp \
+    xmlreader.cpp
 
 HEADERS += \
     mainwindow.h \
-    tryy.h
+    instrument.h \
+    xmlreader.h
 
 FORMS += \
         mainwindow.ui

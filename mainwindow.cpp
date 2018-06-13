@@ -7,12 +7,27 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent)
 {
     this->setWindowTitle("FYCYC-Aviation Instruments X");
     this->resize(QSize(1600,900));
-    tt=new Tryy(this);
-    tt->move(100,50);
-    tt->resize(100,100);
-    tt->show();
     SetTimmer();
     SetRightMenu();
+    xmlreader=new XMLReader();
+    xmlreader->ReadFile();
+    xmlreader->WriteFile();
+
+    if(debug)
+    {
+        instrument=new Instrument(this);
+        instrument->move(30,30);
+        instrument->resize(300,100);
+        instrument->show();
+    }
+    else
+    {
+
+    }
+
+
+
+
 
 }
 void mainwindow::paintEvent(QPaintEvent *event)
@@ -60,6 +75,15 @@ void mainwindow::SetRightMenu()
 void mainwindow::ChangeDisplayMode()
 {
     mode=1-mode;
+    if(debug)
+    {
+        instrument->SetDisplayMode(mode);
+    }
+    else
+    {
+
+    }
+
     //qDebug()<<"slotB() is called.";
 }
 void mainwindow::ChangeTitleBar()
