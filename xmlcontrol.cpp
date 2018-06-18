@@ -1,0 +1,131 @@
+#include "xmlcontrol.h"
+
+XMLControl::XMLControl()
+{
+    datastruct=new DataStruct();
+}
+void XMLControl::CreateFile(QString fileName)
+{
+    QFile file(fileName);
+    file.open(QIODevice::ReadWrite);
+    QDomDocument doc;
+    QDomProcessingInstruction instruction;
+    instruction=doc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"utf-8\"");
+    doc.appendChild(instruction);
+    QDomElement root=doc.createElement("config");
+
+    doc.appendChild(root);
+    QDomText text=doc.createTextNode("");
+    root.appendChild(text);
+
+    QTextStream out(&file);
+    doc.save(out,4);
+    file.close();
+}
+void XMLControl::WriteFile()
+{
+    QString fileName="config.xml";
+    QFile file(fileName);
+    if(!file.exists(fileName))
+    {
+        CreateFile(fileName);
+    }
+    file.open(QIODevice::WriteOnly);
+    QXmlStreamWriter xmlWriter(&file);
+
+    QDomDocument doc;
+    QDomProcessingInstruction instruction;
+    instruction=doc.createProcessingInstruction("xml","version=\"1.0\" encoding=\"utf-8\"");
+    doc.appendChild(instruction);
+    QDomElement root=doc.createElement("config");
+    doc.appendChild(root);
+
+    //服务器名称
+    QDomElement itemm=doc.createElement("server");
+    QDomElement itemmm;
+    QDomText textt;
+    itemm.setAttribute("name",datastruct->data_server);
+    root.appendChild(itemm);
+
+    //全屏
+    itemm=doc.createElement("fullscreen");
+    itemm.setAttribute("value",QString::number(datastruct->data_fullscreen,10));
+    root.appendChild(itemm);
+
+    //显示边框
+    itemm=doc.createElement("showBorder");
+    itemm.setAttribute("value",QString::number(datastruct->data_showBorder,10));
+    root.appendChild(itemm);
+
+    //允许远程关闭
+    itemm=doc.createElement("allowShutdown");
+    itemm.setAttribute("value",QString::number(datastruct->data_allowShutdown,10));
+    root.appendChild(itemm);
+
+    //始终置顶
+    itemm=doc.createElement("stayOnTop");
+    itemm.setAttribute("value",QString::number(datastruct->data_stayOnTop,10));
+    root.appendChild(itemm);
+
+    //屏幕数据
+    itemm=doc.createElement("screen");
+    itemmm=doc.createElement("x");
+    textt=doc.createTextNode(QString::number(datastruct->data_screen.data_x,10));
+    itemmm.appendChild(textt);
+    itemm.appendChild(itemmm);
+
+    itemmm=doc.createElement("y");
+    textt=doc.createTextNode(QString::number(datastruct->data_screen.data_y,10));
+    itemmm.appendChild(textt);
+    itemm.appendChild(itemmm);
+
+    itemmm=doc.createElement("width");
+    textt=doc.createTextNode(QString::number(datastruct->data_screen.data_width,10));
+    itemmm.appendChild(textt);
+    itemm.appendChild(itemmm);
+
+    itemmm=doc.createElement("height");
+    textt=doc.createTextNode(QString::number(datastruct->data_screen.data_height,10));
+    itemmm.appendChild(textt);
+    itemm.appendChild(itemmm);
+
+    root.appendChild(itemm);
+
+    //绘制速率
+    itemm=doc.createElement("frameRate");
+    itemm.setAttribute("value",QString::number(datastruct->data_frameRate,10));
+    root.appendChild(itemm);
+
+    //数据速率
+    itemm=doc.createElement("dataRate");
+    itemm.setAttribute("value",QString::number(datastruct->data_dataRate,10));
+    root.appendChild(itemm);
+
+
+    QTextStream out(&file);
+    doc.save(out,4);
+    file.close();
+}
+DataStruct* XMLControl::ReadFile()
+{
+    QString fileName="config.xml";
+    QFile file(fileName);
+    //若无该文件则生成文件并返回默认值
+    if(!file.exists(fileName))
+    {
+        //生成文件
+        CreateFile(fileName);
+        WriteFile();
+    }
+    else
+    {
+        //读取文件
+
+    }
+    return this->datastruct;
+}
+void XMLControl::SetDataStruct(DataStruct* p_datastruct)
+{
+    this->datastruct=p_datastruct;
+    WriteFile();
+}

@@ -27,12 +27,14 @@ SOURCES += \
         main.cpp \
     mainwindow.cpp \
     instrument.cpp \
-    xmlreader.cpp
+    datastruct.cpp \
+    xmlcontrol.cpp
 
 HEADERS += \
     mainwindow.h \
     instrument.h \
-    xmlreader.h
+    datastruct.h \
+    xmlcontrol.h
 
 FORMS += \
         mainwindow.ui

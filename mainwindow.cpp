@@ -5,13 +5,18 @@
 
 mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent)
 {
-    this->setWindowTitle("FYCYC-Aviation Instruments X");
-    this->resize(QSize(1600,900));
+    this->setWindowTitle("FYCYC-Aviation Instruments X");    
+    data=new DataStruct();
+    xmlcontrol=new XMLControl();
+    data=xmlcontrol->ReadFile();
+    xmlcontrol->SetDataStruct(data);            //更新XML数据
     SetTimmer();
     SetRightMenu();
-    xmlreader=new XMLReader();
-    xmlreader->ReadFile();
-    xmlreader->WriteFile();
+
+    this->resize(QSize(this->data->data_screen.data_width,this->data->data_screen.data_height));
+    this->move(this->data->data_screen.data_x,this->data->data_screen.data_y);
+
+
 
     if(debug)
     {
@@ -42,15 +47,18 @@ void mainwindow::paintEvent(QPaintEvent *event)
     {
         painter.fillRect(QRect(0,0,this->width(),this->height()),QBrush(Qt::blue));
     }
-    //设置标题栏
-    if(title==0)
-    {
-        //mainwindow->setWindowFlags(Qt::FramelessWindowHint);
-    }
-    else if(title==1)
-    {
-        //this->setWindowFlags(Qt::);
-    }
+}
+void mainwindow::resizeEvent(QResizeEvent *event)
+{
+    data->data_screen.data_height=this->height();
+    data->data_screen.data_width=this->width();
+    xmlcontrol->SetDataStruct(data);            //更新XML数据
+}
+void mainwindow::moveEvent(QMoveEvent *event)
+{
+    data->data_screen.data_x=this->x();
+    data->data_screen.data_y=this->y();
+    xmlcontrol->SetDataStruct(data);            //更新XML数据
 }
 void mainwindow::SetRightMenu()
 {
@@ -88,22 +96,23 @@ void mainwindow::ChangeDisplayMode()
 }
 void mainwindow::ChangeTitleBar()
 {
-    title=1-title;
-    if(title==0)
+    data->data_showBorder=1-data->data_showBorder;
+    if(data->data_showBorder==0)
     {
         this->setWindowFlags(Qt::FramelessWindowHint);
-        show();
+        show();        
     }
     else
     {
         this->setWindowFlags(windowFlags()&~Qt::FramelessWindowHint);
         show();
     }
+    xmlcontrol->SetDataStruct(data);            //更新XML数据
 }
 void mainwindow::ChangeFullScreen()
 {
-    fullScreen=1-fullScreen;
-    if(fullScreen==0)
+    data->data_fullscreen=1-data->data_fullscreen;
+    if(data->data_fullscreen==0)
     {
         showNormal();
     }
@@ -111,12 +120,13 @@ void mainwindow::ChangeFullScreen()
     {
         showFullScreen();
     }
+    xmlcontrol->SetDataStruct(data);            //更新XML数据
 }
 void mainwindow::SetTimmer()
 {
     QTimer *timer=new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(update()));
-    timer->start(1000/rate_Frame);
+    timer->start((int)(1000/data->data_frameRate));
 }
 void mainwindow::keyPressEvent(QKeyEvent *event)
 {
