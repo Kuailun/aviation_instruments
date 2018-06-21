@@ -6,6 +6,7 @@
 #include <QXmlStreamWriter>
 #include "datastruct.h"
 #include <QString>
+#include <QDebug>
 
 
 class XMLControl

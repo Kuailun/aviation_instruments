@@ -120,6 +120,34 @@ DataStruct* XMLControl::ReadFile()
     else
     {
         //读取文件
+        file.open(QIODevice::ReadOnly);
+        QDomDocument doc;
+        doc.setContent(&file);
+        QDomElement root=doc.documentElement();
+        if(root.tagName()!="config")
+        {
+            WriteFile();
+        }
+        QDomNode n=root.firstChild();
+        while(!n.isNull())
+        {
+            QDomElement e=n.toElement();
+            if(!e.isNull())
+            {
+                if(e.nodeName()=="server")
+                {
+                    if(e.hasAttributes())
+                    {
+                        QDomNamedNodeMap tmpMap=e.attributes();
+                        for(int i=0;i<(int)tmpMap.size();i++)
+                        {
+                            datastruct->data_server=tmpMap.item(i).nodeValue();
+                            qDebug()<<datastruct->data_server<<endl;
+                        }
+                    }
+                }
+            }
+        }
 
     }
     return this->datastruct;
