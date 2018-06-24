@@ -142,11 +142,114 @@ DataStruct* XMLControl::ReadFile()
                         for(int i=0;i<(int)tmpMap.size();i++)
                         {
                             datastruct->data_server=tmpMap.item(i).nodeValue();
-                            qDebug()<<datastruct->data_server<<endl;
                         }
                     }
                 }
+                else if(e.nodeName()=="fullscreen")
+                {
+                    if(e.hasAttributes())
+                    {
+                        QDomNamedNodeMap tmpMap=e.attributes();
+                        for(int i=0;i<(int)tmpMap.size();i++)
+                        {
+                            bool ok;
+                            datastruct->data_fullscreen=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                        }
+                    }
+                }
+                else if(e.nodeName()=="showBorder")
+                {
+                    if(e.hasAttributes())
+                    {
+                        QDomNamedNodeMap tmpMap=e.attributes();
+                        for(int i=0;i<(int)tmpMap.size();i++)
+                        {
+                            bool ok;
+                            datastruct->data_showBorder=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                        }
+                    }
+                }
+                else if(e.nodeName()=="allowShutdown")
+                {
+                    if(e.hasAttributes())
+                    {
+                        QDomNamedNodeMap tmpMap=e.attributes();
+                        for(int i=0;i<(int)tmpMap.size();i++)
+                        {
+                            bool ok;
+                            datastruct->data_allowShutdown=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                        }
+                    }
+                }
+                else if(e.nodeName()=="stayOnTop")
+                {
+                    if(e.hasAttributes())
+                    {
+                        QDomNamedNodeMap tmpMap=e.attributes();
+                        for(int i=0;i<(int)tmpMap.size();i++)
+                        {
+                            bool ok;
+                            datastruct->data_stayOnTop=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                        }
+                    }
+                }
+                else if(e.nodeName()=="frameRate")
+                {
+                    if(e.hasAttributes())
+                    {
+                        QDomNamedNodeMap tmpMap=e.attributes();
+                        for(int i=0;i<(int)tmpMap.size();i++)
+                        {
+                            bool ok;
+                            datastruct->data_frameRate=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                        }
+                    }
+                }
+                else if(e.nodeName()=="screen")
+                {
+                    if(e.hasChildNodes())
+                    {
+                        QDomNodeList screenlist=e.childNodes();
+                        for(int i=0;i<(int)screenlist.size();i++)
+                        {
+                            if(screenlist.at(i).toElement().tagName()=="x")
+                            {
+                                bool ok;
+                                datastruct->data_screen.data_x=screenlist.at(i).toElement().text().toInt(&ok,10);
+                            }
+                            else if(screenlist.at(i).toElement().tagName()=="y")
+                            {
+                                bool ok;
+                                datastruct->data_screen.data_y=screenlist.at(i).toElement().text().toInt(&ok,10);
+                            }
+                            else if(screenlist.at(i).toElement().tagName()=="width")
+                            {
+                                bool ok;
+                                datastruct->data_screen.data_width=screenlist.at(i).toElement().text().toInt(&ok,10);
+                            }
+                            else if(screenlist.at(i).toElement().tagName()=="height")
+                            {
+                                bool ok;
+                                datastruct->data_screen.data_height=screenlist.at(i).toElement().text().toInt(&ok,10);
+                            }
+                        }
+                    }
+                }
+                else if(e.nodeName()=="dataRate")
+                {
+                    if(e.hasAttributes())
+                    {
+                        QDomNamedNodeMap tmpMap=e.attributes();
+                        for(int i=0;i<(int)tmpMap.size();i++)
+                        {
+                            bool ok;
+                            datastruct->data_dataRate=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                        }
+                    }
+                }
+
             }
+            n=n.nextSiblingElement();
         }
 
     }
