@@ -28,13 +28,16 @@ SOURCES += \
     mainwindow.cpp \
     instrument.cpp \
     datastruct.cpp \
-    xmlcontrol.cpp
+    xmlcontrol.cpp \
+    configuration.cpp
 
 HEADERS += \
     mainwindow.h \
     instrument.h \
     datastruct.h \
-    xmlcontrol.h
+    xmlcontrol.h \
+    configuration.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    configuration.ui

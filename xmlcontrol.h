@@ -13,10 +13,10 @@ class XMLControl
 {
 public:
     XMLControl();
-    DataStruct* ReadFile();
-    void SetDataStruct(DataStruct* p_datastruct);
+    Config* ReadFile();
+    void SetDataStruct(Config* p_datastruct);
 private:
-    DataStruct *datastruct;
+    Config *m_config;
     void CreateFile(QString fileName);
     void WriteFile();
 };

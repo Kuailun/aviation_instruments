@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -6,6 +6,7 @@
 #include <QPainter>
 #include "instrument.h"
 #include "xmlcontrol.h"
+#include "configuration.h"
 
 class mainwindow : public QMainWindow
 {
@@ -14,13 +15,15 @@ public:
     explicit mainwindow(QWidget *parent = nullptr);
 signals:
 
-public slots:
+private slots:
     void ChangeDisplayMode();                   //变换显示模式
     void ChangeTitleBar();                      //变换标题栏
     void ChangeFullScreen();                    //变换全屏模式
+    void OpenConfiguration();                   //打开设置界面
+    void ReceiveConfig(Config* p_config);            //更新设置
 private:
     //数据区域
-    DataStruct* data;
+    Config* m_config;
 
 
     //XML记录+显示变量区
@@ -28,6 +31,7 @@ private:
 
     //内部不显示变量区
     Instrument *instrument;
+    Configuration *configuration;
     int debug=1;                                //程序编写调试设置，0=正常运行，1=调试
     int mode=0;                                 //0=正常运行，1=调试
 

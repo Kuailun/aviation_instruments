@@ -11,19 +11,19 @@ struct screen
     int data_height=900;
 };
 
-class DataStruct
+class Config
 {
 public:
-    DataStruct();
+    Config();
 
-    QString data_server="127.0.0.1";
-    int data_fullscreen=0;
-    int data_showBorder=1;
-    int data_allowShutdown=0;
-    int data_stayOnTop=0;
-    screen data_screen;
-    int data_frameRate=30;
-    int data_dataRate=10;
+    QString config_server="127.0.0.1";
+    int config_fullscreen=0;
+    int config_showBorder=1;
+    int config_allowShutdown=0;
+    int config_stayOnTop=0;
+    screen config_screen;
+    int config_frameRate=30;
+    int config_dataRate=10;
 
 };
 

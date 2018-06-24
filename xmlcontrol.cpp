@@ -2,7 +2,7 @@
 
 XMLControl::XMLControl()
 {
-    datastruct=new DataStruct();
+    m_config=new Config();
 }
 void XMLControl::CreateFile(QString fileName)
 {
@@ -44,48 +44,48 @@ void XMLControl::WriteFile()
     QDomElement itemm=doc.createElement("server");
     QDomElement itemmm;
     QDomText textt;
-    itemm.setAttribute("name",datastruct->data_server);
+    itemm.setAttribute("name",m_config->config_server);
     root.appendChild(itemm);
 
     //全屏
     itemm=doc.createElement("fullscreen");
-    itemm.setAttribute("value",QString::number(datastruct->data_fullscreen,10));
+    itemm.setAttribute("value",QString::number(m_config->config_fullscreen,10));
     root.appendChild(itemm);
 
     //显示边框
     itemm=doc.createElement("showBorder");
-    itemm.setAttribute("value",QString::number(datastruct->data_showBorder,10));
+    itemm.setAttribute("value",QString::number(m_config->config_showBorder,10));
     root.appendChild(itemm);
 
     //允许远程关闭
     itemm=doc.createElement("allowShutdown");
-    itemm.setAttribute("value",QString::number(datastruct->data_allowShutdown,10));
+    itemm.setAttribute("value",QString::number(m_config->config_allowShutdown,10));
     root.appendChild(itemm);
 
     //始终置顶
     itemm=doc.createElement("stayOnTop");
-    itemm.setAttribute("value",QString::number(datastruct->data_stayOnTop,10));
+    itemm.setAttribute("value",QString::number(m_config->config_stayOnTop,10));
     root.appendChild(itemm);
 
     //屏幕数据
     itemm=doc.createElement("screen");
     itemmm=doc.createElement("x");
-    textt=doc.createTextNode(QString::number(datastruct->data_screen.data_x,10));
+    textt=doc.createTextNode(QString::number(m_config->config_screen.data_x,10));
     itemmm.appendChild(textt);
     itemm.appendChild(itemmm);
 
     itemmm=doc.createElement("y");
-    textt=doc.createTextNode(QString::number(datastruct->data_screen.data_y,10));
+    textt=doc.createTextNode(QString::number(m_config->config_screen.data_y,10));
     itemmm.appendChild(textt);
     itemm.appendChild(itemmm);
 
     itemmm=doc.createElement("width");
-    textt=doc.createTextNode(QString::number(datastruct->data_screen.data_width,10));
+    textt=doc.createTextNode(QString::number(m_config->config_screen.data_width,10));
     itemmm.appendChild(textt);
     itemm.appendChild(itemmm);
 
     itemmm=doc.createElement("height");
-    textt=doc.createTextNode(QString::number(datastruct->data_screen.data_height,10));
+    textt=doc.createTextNode(QString::number(m_config->config_screen.data_height,10));
     itemmm.appendChild(textt);
     itemm.appendChild(itemmm);
 
@@ -93,12 +93,12 @@ void XMLControl::WriteFile()
 
     //绘制速率
     itemm=doc.createElement("frameRate");
-    itemm.setAttribute("value",QString::number(datastruct->data_frameRate,10));
+    itemm.setAttribute("value",QString::number(m_config->config_frameRate,10));
     root.appendChild(itemm);
 
     //数据速率
     itemm=doc.createElement("dataRate");
-    itemm.setAttribute("value",QString::number(datastruct->data_dataRate,10));
+    itemm.setAttribute("value",QString::number(m_config->config_dataRate,10));
     root.appendChild(itemm);
 
 
@@ -106,7 +106,7 @@ void XMLControl::WriteFile()
     doc.save(out,4);
     file.close();
 }
-DataStruct* XMLControl::ReadFile()
+Config* XMLControl::ReadFile()
 {
     QString fileName="config.xml";
     QFile file(fileName);
@@ -141,7 +141,7 @@ DataStruct* XMLControl::ReadFile()
                         QDomNamedNodeMap tmpMap=e.attributes();
                         for(int i=0;i<(int)tmpMap.size();i++)
                         {
-                            datastruct->data_server=tmpMap.item(i).nodeValue();
+                            m_config->config_server=tmpMap.item(i).nodeValue();
                         }
                     }
                 }
@@ -153,7 +153,7 @@ DataStruct* XMLControl::ReadFile()
                         for(int i=0;i<(int)tmpMap.size();i++)
                         {
                             bool ok;
-                            datastruct->data_fullscreen=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                            m_config->config_fullscreen=tmpMap.item(i).nodeValue().toInt(&ok,10);
                         }
                     }
                 }
@@ -165,7 +165,7 @@ DataStruct* XMLControl::ReadFile()
                         for(int i=0;i<(int)tmpMap.size();i++)
                         {
                             bool ok;
-                            datastruct->data_showBorder=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                            m_config->config_showBorder=tmpMap.item(i).nodeValue().toInt(&ok,10);
                         }
                     }
                 }
@@ -177,7 +177,7 @@ DataStruct* XMLControl::ReadFile()
                         for(int i=0;i<(int)tmpMap.size();i++)
                         {
                             bool ok;
-                            datastruct->data_allowShutdown=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                            m_config->config_allowShutdown=tmpMap.item(i).nodeValue().toInt(&ok,10);
                         }
                     }
                 }
@@ -189,7 +189,7 @@ DataStruct* XMLControl::ReadFile()
                         for(int i=0;i<(int)tmpMap.size();i++)
                         {
                             bool ok;
-                            datastruct->data_stayOnTop=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                            m_config->config_stayOnTop=tmpMap.item(i).nodeValue().toInt(&ok,10);
                         }
                     }
                 }
@@ -201,7 +201,7 @@ DataStruct* XMLControl::ReadFile()
                         for(int i=0;i<(int)tmpMap.size();i++)
                         {
                             bool ok;
-                            datastruct->data_frameRate=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                            m_config->config_frameRate=tmpMap.item(i).nodeValue().toInt(&ok,10);
                         }
                     }
                 }
@@ -215,22 +215,22 @@ DataStruct* XMLControl::ReadFile()
                             if(screenlist.at(i).toElement().tagName()=="x")
                             {
                                 bool ok;
-                                datastruct->data_screen.data_x=screenlist.at(i).toElement().text().toInt(&ok,10);
+                                m_config->config_screen.data_x=screenlist.at(i).toElement().text().toInt(&ok,10);
                             }
                             else if(screenlist.at(i).toElement().tagName()=="y")
                             {
                                 bool ok;
-                                datastruct->data_screen.data_y=screenlist.at(i).toElement().text().toInt(&ok,10);
+                                m_config->config_screen.data_y=screenlist.at(i).toElement().text().toInt(&ok,10);
                             }
                             else if(screenlist.at(i).toElement().tagName()=="width")
                             {
                                 bool ok;
-                                datastruct->data_screen.data_width=screenlist.at(i).toElement().text().toInt(&ok,10);
+                                m_config->config_screen.data_width=screenlist.at(i).toElement().text().toInt(&ok,10);
                             }
                             else if(screenlist.at(i).toElement().tagName()=="height")
                             {
                                 bool ok;
-                                datastruct->data_screen.data_height=screenlist.at(i).toElement().text().toInt(&ok,10);
+                                m_config->config_screen.data_height=screenlist.at(i).toElement().text().toInt(&ok,10);
                             }
                         }
                     }
@@ -243,7 +243,7 @@ DataStruct* XMLControl::ReadFile()
                         for(int i=0;i<(int)tmpMap.size();i++)
                         {
                             bool ok;
-                            datastruct->data_dataRate=tmpMap.item(i).nodeValue().toInt(&ok,10);
+                            m_config->config_dataRate=tmpMap.item(i).nodeValue().toInt(&ok,10);
                         }
                     }
                 }
@@ -253,10 +253,10 @@ DataStruct* XMLControl::ReadFile()
         }
 
     }
-    return this->datastruct;
+    return this->m_config;
 }
-void XMLControl::SetDataStruct(DataStruct* p_datastruct)
+void XMLControl::SetDataStruct(Config* p_datastruct)
 {
-    this->datastruct=p_datastruct;
+    this->m_config=p_datastruct;
     WriteFile();
 }

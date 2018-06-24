@@ -1,6 +1,6 @@
 #include "datastruct.h"
 
-DataStruct::DataStruct()
+Config::Config()
 {
 
 }
