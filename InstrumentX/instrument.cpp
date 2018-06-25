@@ -1,4 +1,4 @@
-#include "instrument.h"
+﻿#include "instrument.h"
 
 Instrument::Instrument(QWidget *parent)
     : QDialog(parent)
@@ -14,6 +14,8 @@ Instrument::~Instrument()
 }
 void Instrument::paintEvent(QPaintEvent *event)
 {
+    (void)event;
+
     QPainter painter(this);
     painter.fillRect(QRect(0,13,this->width(),this->height()-13),QBrush(Qt::black));
 
@@ -32,6 +34,7 @@ void Instrument::paintEvent(QPaintEvent *event)
 /*************************响应函数区************************/
 void Instrument::mousePressEvent(QMouseEvent *event)
 {
+    (void)event;
     if(mode==1)
     {
         mMoveing = true;
@@ -57,6 +60,7 @@ void Instrument::mouseMoveEvent(QMouseEvent *event)
 }
 void Instrument::mouseReleaseEvent(QMouseEvent *event)
 {
+    (void)event;
     mMoveing=false;
 }
 void Instrument::SetDisplayMode(int m)
