@@ -7,6 +7,7 @@
 #include "instrument.h"
 #include "xmlcontrol.h"
 #include "configuration.h"
+#include "printlog.h"
 
 class mainwindow : public QMainWindow
 {

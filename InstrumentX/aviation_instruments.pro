@@ -29,14 +29,16 @@ SOURCES += \
     instrument.cpp \
     datastruct.cpp \
     xmlcontrol.cpp \
-    configuration.cpp
+    configuration.cpp \
+    printlog.cpp
 
 HEADERS += \
     mainwindow.h \
     instrument.h \
     datastruct.h \
     xmlcontrol.h \
-    configuration.h
+    configuration.h \
+    printlog.h
 
 FORMS += \
         mainwindow.ui \

@@ -5,18 +5,21 @@
 
 mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent)
 {
-    this->setWindowTitle("FYCYC-Aviation Instruments X");    
-    m_config=new Config();
-    configuration=new Configuration();
-    xmlcontrol=new XMLControl();
 
-    m_config=xmlcontrol->ReadFile();
-    xmlcontrol->SetDataStruct(m_config);            //更新XML数据
+    DeleteFile();                           //删除log.txt
+    PrintLog("start program");              //log.txt中输出信息
+    this->setWindowTitle("FYCYC-Aviation Instruments X");       //设置窗口名称
+    m_config=new Config();                  //初始化配置数据
+    configuration=new Configuration();      //初始化配置页面
+    xmlcontrol=new XMLControl();            //初始化xml读写类
+
+    m_config=xmlcontrol->ReadFile();        //读xml配置数据
+    xmlcontrol->SetDataStruct(m_config);    //更新XML数据
 
     connect(configuration,SIGNAL(SendConfig(Config*)),this,SLOT(ReceiveConfig(Config*)));    //子窗体回传设置
 
-    SetTimmer();
-    SetRightMenu();
+    SetTimmer();                            //设置界面更新频率
+    SetRightMenu();                         //设置右键菜单
 
     this->resize(QSize(this->m_config->config_screen.data_width,this->m_config->config_screen.data_height));
     this->move(this->m_config->config_screen.data_x,this->m_config->config_screen.data_y);
