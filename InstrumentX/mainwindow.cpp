@@ -1,170 +1,178 @@
-﻿#include "mainwindow.h"
+﻿//======== ======== ======== ======== ======== ======== ======== ========
+///	\file
+///		Container of all windows
+///
+///	\copyright
+///		Copyright (C) FYCYC-CreativeHouse - All Rights Reserved
+///		Unauthorized copying of this file, via any medium is strictly
+/// prohibited 		Proprietary and confidential
+//======== ======== ======== ======== ======== ======== ======== ========
+
+#include "mainwindow.h"
+#include "instrument.h"
 #include <QDebug>
-#include <QTimer>
 #include <QKeyEvent>
+#include <QTimer>
 
-mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent)
-{
+mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent) {
+  DeleteFile();                              // Delete log.txt if exist
+  PrintLog(LogLevel::Info, "start program"); // Log to the file
 
-    DeleteFile();                           //删除log.txt
-    PrintLog("start program");              //log.txt中输出信息
-    this->setWindowTitle("FYCYC-Aviation Instruments X");       //设置窗口名称
-    m_config=new Config();                  //初始化配置数据
-    configuration=new Configuration();      //初始化配置页面
-    xmlcontrol=new XMLControl();            //初始化xml读写类
+  //===== ===== ===== ===== ===== Initializing ===== ===== ===== ===== ===== //
+  this->setWindowTitle("FYCYC-Aviation Instruments X"); // Set window title
+  m_config = new Config(); // Initializing struct: config
 
-    m_config=xmlcontrol->ReadFile();        //读xml配置数据
-    xmlcontrol->SetDataStruct(m_config);    //更新XML数据
+  configuration = new Configuration(); // Initializing page: config
+  xmlcontrol = new XMLControl();       // Initializing class: xmlcontrol
 
-    connect(configuration,SIGNAL(SendConfig(Config*)),this,SLOT(ReceiveConfig(Config*)));    //子窗体回传设置
+  m_config = xmlcontrol->ReadFile();   // Read data from XML
+  xmlcontrol->SetDataStruct(m_config); // Write data to XML
 
-    SetTimmer();                            //设置界面更新频率
-    SetRightMenu();                         //设置右键菜单
+  connect(configuration, SIGNAL(SendConfig(Config *)), this,
+          SLOT(ReceiveConfig(Config *))); //子窗体回传设置
+  SetTimmer();                            // Set refresh frequency
+  SetRightMenu();                         // Set right mouse menu
 
-    this->resize(QSize(this->m_config->config_screen.data_width,this->m_config->config_screen.data_height));
-    this->move(this->m_config->config_screen.data_x,this->m_config->config_screen.data_y);
+  this->resize(QSize(this->m_config->config_screen.real_width,
+                     this->m_config->config_screen.real_height));
+  this->move(this->m_config->config_screen.position_x,
+             this->m_config->config_screen.position_y);
+  debug = 1;
+  if (debug) {
 
+    prepareInstrument(Instrument::InstrumentType::IS_Default, "Green", 100,
+                      100);
+    prepareInstrument(Instrument::InstrumentType::IS_DefaultR, "Red", 700, 100);
 
-
-    if(debug)
-    {
-        instrument=new Instrument(this);
-        instrument->move(30,30);
-        instrument->resize(300,100);
-        instrument->show();
-    }
-    else
-    {
-
-    }
-
-
-
-
-
+  } else {
+  }
 }
-void mainwindow::paintEvent(QPaintEvent *event)
-{
-    (void)event;                                    //去掉报警信息
+void mainwindow::paintEvent(QPaintEvent *event) {
+  (void)event; //去掉报警信息
 
-    QPainter painter(this);
-    //设置背景颜色
-    if(mode==0)
-    {
-        painter.fillRect(QRect(0,0,this->width(),this->height()),QBrush(Qt::black));
-    }
-    else if(mode==1)
-    {
-        painter.fillRect(QRect(0,0,this->width(),this->height()),QBrush(Qt::blue));
-    }
+  QPainter painter(this);
+  //设置背景颜色
+  if (mode == 0) {
+    painter.fillRect(QRect(0, 0, this->width(), this->height()),
+                     QBrush(Qt::black));
+  } else if (mode == 1) {
+    painter.fillRect(QRect(0, 0, this->width(), this->height()),
+                     QBrush(Qt::blue));
+  }
 }
-void mainwindow::resizeEvent(QResizeEvent *event)
-{
-    (void)event;                                    //去掉报警信息
+void mainwindow::resizeEvent(QResizeEvent *event) {
+  (void)event; //去掉报警信息
 
-    m_config->config_screen.data_height=this->height();
-    m_config->config_screen.data_width=this->width();
-    xmlcontrol->SetDataStruct(m_config);            //更新XML数据
+  m_config->config_screen.real_height = this->height();
+  m_config->config_screen.real_width = this->width();
+  xmlcontrol->SetDataStruct(m_config); //更新XML数据
 }
-void mainwindow::moveEvent(QMoveEvent *event)
-{
-    (void)event;                                    //去掉报警信息
+void mainwindow::moveEvent(QMoveEvent *event) {
+  (void)event; //去掉报警信息
 
-    m_config->config_screen.data_x=this->x();
-    m_config->config_screen.data_y=this->y();
-    xmlcontrol->SetDataStruct(m_config);            //更新XML数据
+  m_config->config_screen.position_x = this->x();
+  m_config->config_screen.position_y = this->y();
+  xmlcontrol->SetDataStruct(m_config); //更新XML数据
 }
-void mainwindow::SetRightMenu()
-{
-    QAction *paConfiguration=new QAction("Configuration",this);
-    QAction *paDisplayMode=new QAction("Display Mode    F12",this);
-    QAction *paTitle=new QAction("TitleBar",this);
-    QAction *paFullScreen=new QAction( "FullScreen      F11",this);
+void mainwindow::SetRightMenu() {
+  QAction *paConfiguration = new QAction("Configuration", this);
+  QAction *paDisplayMode = new QAction("Display Mode    F12", this);
+  QAction *paTitle = new QAction("TitleBar", this);
+  QAction *paFullScreen = new QAction("FullScreen      F11", this);
 
-    addAction(paConfiguration);
-    addAction(paDisplayMode);
-    addAction(paTitle);
-    addAction(paFullScreen);
+  addAction(paConfiguration);
+  addAction(paDisplayMode);
+  addAction(paTitle);
+  addAction(paFullScreen);
 
+  connect(paConfiguration, SIGNAL(triggered()), this,
+          SLOT(OpenConfiguration()));
+  connect(paDisplayMode, SIGNAL(triggered()), this, SLOT(ChangeDisplayMode()));
+  connect(paTitle, SIGNAL(triggered()), this, SLOT(ChangeTitleBar()));
+  connect(paFullScreen, SIGNAL(triggered()), this, SLOT(ChangeFullScreen()));
 
-    connect(paConfiguration,SIGNAL(triggered()),this,SLOT(OpenConfiguration()));
-    connect(paDisplayMode,SIGNAL(triggered()),this,SLOT(ChangeDisplayMode()));
-    connect(paTitle,SIGNAL(triggered()),this,SLOT(ChangeTitleBar()));
-    connect(paFullScreen,SIGNAL(triggered()),this,SLOT(ChangeFullScreen()));
+  setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+void mainwindow::ChangeDisplayMode() {
+  mode = 1 - mode;
 
-    setContextMenuPolicy(Qt::ActionsContextMenu);
-}
-void mainwindow::ChangeDisplayMode()
-{
-    mode=1-mode;
-    if(debug)
-    {
-        instrument->SetDisplayMode(mode);
-    }
-    else
-    {
+  std::vector<Instrument *>::iterator iter;
+  iter = m_Instruments.begin();
 
+  switch (mode) {
+  case 0: {
+    for (int i = 0; i < m_Instruments.size(); i++) {
+      (*iter)->SetDisplayMode(Instrument::RunningMode::Running);
+      iter++;
     }
+  } break;
+  case 1: {
+    for (int i = 0; i < m_Instruments.size(); i++) {
+      (*iter)->SetDisplayMode(Instrument::RunningMode::Setting);
+      iter++;
+    }
+    break;
+  }
+  default:
+    break;
+  }
+}
+void mainwindow::ChangeTitleBar() {
+  m_config->config_showBorder = 1 - m_config->config_showBorder;
+  if (m_config->config_showBorder == 0) {
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    show();
+  } else {
+    this->setWindowFlags(windowFlags() & ~Qt::FramelessWindowHint);
+    show();
+  }
+  xmlcontrol->SetDataStruct(m_config); //更新XML数据
+}
+void mainwindow::ChangeFullScreen() {
+  m_config->config_fullscreen = 1 - m_config->config_fullscreen;
+  if (m_config->config_fullscreen == 0) {
+    showNormal();
+  } else {
+    showFullScreen();
+  }
+  xmlcontrol->SetDataStruct(m_config); //更新XML数据
+}
+void mainwindow::SetTimmer() {
+  if (timer != nullptr) {
+    timer->stop();
+    delete timer;
+  }
+  timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+  timer->start((int)(1000 / m_config->config_frameRate));
+}
+void mainwindow::keyPressEvent(QKeyEvent *event) {
+  if (Qt::Key_F12 == event->key()) {
+    ChangeDisplayMode();
+    return;
+  }
+  if (Qt::Key_F11 == event->key()) {
+    ChangeFullScreen();
+    return;
+  }
+}
+void mainwindow::OpenConfiguration() {
+  configuration->setWindowTitle("Configuration");
 
-    //qDebug()<<"slotB() is called.";
+  configuration->show();
+  configuration->SetConfig(m_config);
 }
-void mainwindow::ChangeTitleBar()
-{
-    m_config->config_showBorder=1-m_config->config_showBorder;
-    if(m_config->config_showBorder==0)
-    {
-        this->setWindowFlags(Qt::FramelessWindowHint);
-        show();        
-    }
-    else
-    {
-        this->setWindowFlags(windowFlags()&~Qt::FramelessWindowHint);
-        show();
-    }
-    xmlcontrol->SetDataStruct(m_config);            //更新XML数据
+void mainwindow::ReceiveConfig(Config *p_config) {
+  m_config = p_config;
+  xmlcontrol->SetDataStruct(m_config); //更新XML数据
+  SetTimmer();
 }
-void mainwindow::ChangeFullScreen()
-{
-    m_config->config_fullscreen=1-m_config->config_fullscreen;
-    if(m_config->config_fullscreen==0)
-    {
-        showNormal();
-    }
-    else
-    {
-        showFullScreen();
-    }
-    xmlcontrol->SetDataStruct(m_config);            //更新XML数据
-}
-void mainwindow::SetTimmer()
-{
-    QTimer *timer=new QTimer(this);
-    connect(timer,SIGNAL(timeout()),this,SLOT(update()));
-    timer->start((int)(1000/m_config->config_frameRate));
-}
-void mainwindow::keyPressEvent(QKeyEvent *event)
-{
-    if(Qt::Key_F12==event->key())
-    {
-        ChangeDisplayMode();
-        return;
-    }
-    if(Qt::Key_F11==event->key())
-    {
-        ChangeFullScreen();
-        return;
-    }
-}
-void mainwindow::OpenConfiguration()
-{
-    configuration->setWindowTitle("Configuration");
-
-    configuration->show();
-    configuration->SetConfig(m_config);
-}
-void mainwindow::ReceiveConfig(Config* p_config)
-{
-    m_config=p_config;
-    xmlcontrol->SetDataStruct(m_config);            //更新XML数据
-    qDebug()<<"returned"<<endl;
+// Set data to Instrument
+void mainwindow::prepareInstrument(Instrument::InstrumentType p_type,
+                                   QString p_name, int p_x, int p_y) {
+  Instrument *temp_instrument = new Instrument(this);
+  temp_instrument->InitialInstrument(p_name, p_type, p_x, p_y);
+  temp_instrument->move(p_x, p_y);
+  temp_instrument->show();
+  m_Instruments.push_back(temp_instrument);
 }

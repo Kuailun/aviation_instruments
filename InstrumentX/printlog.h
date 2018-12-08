@@ -6,8 +6,16 @@
 #include <QTextStream>
 #include <QFile>
 
-void PrintLog(QString s);
+enum LogLevel
+{
+    debugInfo,
+    Info,
+    Warning,
+    Error
+};
+void PrintLog(LogLevel logLevel,QString s);
 void CreateFile(QString fileName);
 void DeleteFile();
+
 
 #endif // PRINTLOG_H
