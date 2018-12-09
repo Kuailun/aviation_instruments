@@ -38,8 +38,7 @@ HEADERS += \
     datastruct.h \
     xmlcontrol.h \
     configuration.h \
-    printlog.h \
-    internaldata.h
+    printlog.h
 
 FORMS += \
         mainwindow.ui \

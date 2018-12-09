@@ -10,7 +10,7 @@
 
 #include "xmlcontrol.h"
 
-XMLControl::XMLControl() { m_config = new Config(); }
+XMLControl::XMLControl() {}
 void XMLControl::CreateFile(QString fileName) {
   QFile file(fileName);
   file.open(QIODevice::ReadWrite);
@@ -48,7 +48,7 @@ void XMLControl::WriteFile() {
 
   // server address
   QDomElement itemm = doc.createElement("server");
-  QDomElement itemmm;
+  QDomElement itemmm, itemmm4;
   QDomText textt;
   itemm.setAttribute("name", m_config->config_server);
   root.appendChild(itemm);
@@ -102,6 +102,43 @@ void XMLControl::WriteFile() {
 
   root.appendChild(itemm);
 
+  // Instrument Data
+  itemm = doc.createElement("instrument_number");
+  itemm.setAttribute("value", QString::number(m_instruments->size(), 10));
+  root.appendChild(itemm);
+
+  // Instrument Data in details
+  itemm = doc.createElement("instrument_details");
+  for (int i = 0; i < m_instruments->size(); i++) {
+    itemmm = doc.createElement("instrument_" + QString::number(i, 10));
+    itemmm4 = doc.createElement("x");
+    textt = doc.createTextNode(QString::number(
+        (*m_instruments)[i]->GetInstrumentData().position_x, 10));
+    itemmm4.appendChild(textt);
+    itemmm.appendChild(itemmm4);
+
+    itemmm4 = doc.createElement("y");
+    textt = doc.createTextNode(QString::number(
+        (*m_instruments)[i]->GetInstrumentData().position_y, 10));
+    itemmm4.appendChild(textt);
+    itemmm.appendChild(itemmm4);
+
+    itemmm4 = doc.createElement("ratio");
+    textt = doc.createTextNode(QString::number(
+        (*m_instruments)[i]->GetInstrumentData().o2r_ratio, 10, 3));
+    itemmm4.appendChild(textt);
+    itemmm.appendChild(itemmm4);
+
+    itemmm4 = doc.createElement("type");
+    textt = doc.createTextNode(
+        QString::number((*m_instruments)[i]->GetInstrumentData().type, 10));
+    itemmm4.appendChild(textt);
+    itemmm.appendChild(itemmm4);
+
+    itemm.appendChild(itemmm);
+  }
+  root.appendChild(itemm);
+
   // Drawing frequency
   itemm = doc.createElement("frameRate");
   itemm.setAttribute("value", QString::number(m_config->config_frameRate, 10));
@@ -116,7 +153,7 @@ void XMLControl::WriteFile() {
   doc.save(out, 4);
   file.close();
 }
-Config *XMLControl::ReadFile() {
+Config XMLControl::ReadFile() {
   QString fileName = "config.xml";
   QFile file(fileName);
 
@@ -226,9 +263,17 @@ Config *XMLControl::ReadFile() {
       n = n.nextSiblingElement();
     }
   }
-  return this->m_config;
+  return *m_config;
 }
-void XMLControl::SetDataStruct(Config *p_datastruct) {
-  this->m_config = p_datastruct;
-  WriteFile();
+void XMLControl::SetInstrumentData(
+    const std::vector<Instrument *> *p_data) // Prepare the instrument data
+{
+  *(this->m_instruments) = *p_data;
 }
+void XMLControl::SetReferenceConfig(Config &p_data) {
+  this->m_config = &p_data;
+}
+void XMLControl::SetReferenceConfig(std::vector<Instrument *> &p_data) {
+  this->m_instruments = &p_data;
+}
+void XMLControl::UpdateXML() { WriteFile(); }

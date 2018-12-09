@@ -22,20 +22,21 @@ private slots:
   void ChangeFullScreen();              //变换全屏模式
   void OpenConfiguration();             //打开设置界面
   void ReceiveConfig(Config *p_config); //更新设置
+  void UpdateXML();                     // Update the XML file
 private:
   //数据区域
-  Config *m_config;
-
+  Config m_config;
+  std::vector<Instrument *> m_Instruments;
   // XML记录+显示变量区
   XMLControl *xmlcontrol; // XML读写类
 
   //内部变量区
-  Instrument *instrument;
-  std::vector<Instrument *> m_Instruments;
+
   Configuration *configuration;
-  int debug = 0; // 0=Running，1=Debugging
-  int mode = 0;  // 0=RunningMode::Running，1=RunningMode::Setting
-  QTimer *timer; // Timer for update screen
+  int debug = 0;            // 0=Running，1=Debugging
+  int mode = 0;             // 0=RunningMode::Running，1=RunningMode::Setting
+  bool initialized = false; // Flag, whether initialization is finished
+  QTimer *timer;            // Timer for update screen
 
   //内部功能函数
 

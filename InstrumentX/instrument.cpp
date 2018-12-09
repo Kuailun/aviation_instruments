@@ -16,12 +16,14 @@ void Instrument::paintEvent(QPaintEvent *event) {
     demo_x = 0;
   }
 
-  switch (m_type) {
+  switch (m_instrument.type) {
   case Instrument::InstrumentType::IS_Default:
     painter.fillRect(QRect(0, 13, this->width(), this->height() - 13),
                      QBrush(Qt::green));
-    painter.fillRect(QRect((demo_x + 0) * m_ratio, (demo_y + 13) * m_ratio,
-                           30 * m_ratio, 30 * m_ratio),
+    painter.fillRect(QRect((demo_x + 0) * m_instrument.o2r_ratio,
+                           (demo_y + 13) * m_instrument.o2r_ratio,
+                           30 * m_instrument.o2r_ratio,
+                           30 * m_instrument.o2r_ratio),
                      QBrush(Qt::blue));
     break;
   case Instrument::InstrumentType::IS_DefaultR:
@@ -70,19 +72,20 @@ void Instrument::mouseReleaseEvent(QMouseEvent *event) {
   (void)event;
   mMoving = false;
 
-  m_window.data_x = this->x();
-  m_window.data_y = this->y();
+  m_instrument.position_x = this->x();
+  m_instrument.position_y = this->y();
+  emit UpdateXML();
 }
 // Wheel Event
 void Instrument::wheelEvent(QWheelEvent *event) {
   if (mMoving) {
-    if (event->delta() > 0 && m_ratio <= 4) {
-      m_ratio = m_ratio + 0.01;
-    } else if (event->delta() < 0 && m_ratio >= 0.5) {
-      m_ratio = m_ratio - 0.01;
+    if (event->delta() > 0 && m_instrument.o2r_ratio <= 4) {
+      m_instrument.o2r_ratio = m_instrument.o2r_ratio + 0.01;
+    } else if (event->delta() < 0 && m_instrument.o2r_ratio >= 0.5) {
+      m_instrument.o2r_ratio = m_instrument.o2r_ratio - 0.01;
     }
-    this->resize(this->m_window.data_width * m_ratio,
-                 this->m_window.data_height * m_ratio);
+    this->resize(this->m_instrument.original_width * m_instrument.o2r_ratio,
+                 this->m_instrument.original_height * m_instrument.o2r_ratio);
   }
 }
 void Instrument::SetDisplayMode(RunningMode rm) { this->m_runningMode = rm; }
@@ -90,20 +93,23 @@ void Instrument::SetDisplayMode(RunningMode rm) { this->m_runningMode = rm; }
 // Set variable to Instrument
 void Instrument::InitialInstrument(QString p_name, InstrumentType p_type,
                                    int p_x, int p_y) {
-  this->m_instrumentName = p_name;
-  this->m_type = p_type;
-  this->m_window.data_x = p_x;
-  this->m_window.data_y = p_y;
+  this->m_instrument.type = p_type;
+  this->m_instrument.position_x = p_x;
+  this->m_instrument.position_y = p_y;
 
   switch (p_type) {
   case InstrumentType::IS_Default:
-    this->m_window.data_width = 500;
-    this->m_window.data_height = 500;
+    this->m_instrument.original_width = 500;
+    this->m_instrument.original_height = 500;
     break;
   case InstrumentType::IS_DefaultR:
-    this->m_window.data_width = 500;
-    this->m_window.data_height = 500;
+    this->m_instrument.original_width = 500;
+    this->m_instrument.original_height = 500;
     break;
   }
-  this->resize(m_window.data_width, m_window.data_height);
+  this->m_instrument.real_width =
+      this->m_instrument.o2r_ratio * this->m_instrument.original_width;
+  this->m_instrument.real_height =
+      this->m_instrument.o2r_ratio * this->m_instrument.original_height;
+  this->resize(m_instrument.real_width, m_instrument.real_height);
 }

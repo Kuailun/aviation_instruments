@@ -1,24 +1,30 @@
 #ifndef XMLCONTROL_H
 #define XMLCONTROL_H
+#include "datastruct.h"
+#include <QDebug>
 #include <QFile>
-#include <QtXml/QDomDocument>
+#include <QString>
 #include <QTextStream>
 #include <QXmlStreamWriter>
-#include "datastruct.h"
-#include <QString>
-#include <QDebug>
+#include <QtXml/QDomDocument>
+#include <instrument.h>
 
-
-class XMLControl
-{
+class XMLControl {
 public:
-    XMLControl();
-    Config* ReadFile();
-    void SetDataStruct(Config* p_datastruct);
+  XMLControl();
+  Config ReadFile();
+  void SetInstrumentData(
+      const std::vector<Instrument *> *p_data); // Prepare the instrument data
+  void SetReferenceConfig(Config &p_data);      // Set Data Reference for Config
+  void SetReferenceConfig(
+      std::vector<Instrument *> &p_data); // Set Data Reference for Instruments
+  void UpdateXML();                       // Write XML Data to the file
+
 private:
-    Config *m_config;
-    void CreateFile(QString fileName);
-    void WriteFile();
+  Config *m_config;
+  std::vector<Instrument *> *m_instruments;
+  void CreateFile(QString fileName);
+  void WriteFile();
 };
 
 #endif // XMLCONTROL_H

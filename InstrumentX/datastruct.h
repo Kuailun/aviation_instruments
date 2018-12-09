@@ -2,14 +2,15 @@
 #define DATASTRUCT_H
 #include <Qstring>
 
-struct instrument {
+struct instrumentData {
   int position_x = 100;
   int position_y = 100;
   int original_width = 1000;
   int original_height = 1000;
   int real_width = 1000;
   int real_height = 1013;
-  int o2r_ratio = 1;
+  double o2r_ratio = 1;
+  int type = 0;
 };
 
 struct Config {
@@ -18,7 +19,7 @@ struct Config {
   int config_showBorder = 1;
   int config_allowShutdown = 0;
   int config_stayOnTop = 0;
-  instrument config_screen;
+  instrumentData config_screen;
   int config_frameRate = 30;
   int config_dataRate = 10;
 };

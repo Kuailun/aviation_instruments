@@ -1,12 +1,12 @@
 #ifndef Instrument_H
 #define Instrument_H
 
-#include "internaldata.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDialog>
 #include <QMouseEvent>
 #include <QPainter>
+#include <datastruct.h>
 
 class Instrument : public QDialog {
   Q_OBJECT
@@ -21,6 +21,7 @@ public:
   void SetDisplayMode(RunningMode rm); // Set running mode
   void InitialInstrument(QString p_name, InstrumentType p_type, int p_x,
                          int p_y);
+  instrumentData GetInstrumentData() { return this->m_instrument; }
 
 protected:
   virtual void mousePressEvent(QMouseEvent *event);
@@ -35,14 +36,15 @@ private:
   bool mMoving = false;
   QPoint mMovePosition;
 
-  int m_runningMode = RunningMode::Running;           // Running mode
-  QString m_instrumentName = "Default";               // Window title
-  InstrumentType m_type = InstrumentType::IS_Default; // Instrument Type
-  struct windowData m_window;                         // Window data
-  double m_ratio = 1; // Window Size Ratio to oringinal
+  int m_runningMode = RunningMode::Running; // Running mode
+  QString m_instrumentName = "Default";     // Window title
+  instrumentData m_instrument;              // Instrument Data
 
   int demo_x = 0;
   int demo_y = 0;
+
+signals:
+  void UpdateXML(); // Update the XML File
 };
 
 #endif // Instrument_H
