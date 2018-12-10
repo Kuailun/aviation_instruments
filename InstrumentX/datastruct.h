@@ -1,6 +1,7 @@
 #ifndef DATASTRUCT_H
 #define DATASTRUCT_H
 #include <Qstring>
+#include <vector>
 
 struct instrumentData {
   int position_x = 100;
@@ -19,7 +20,9 @@ struct Config {
   int config_showBorder = 1;
   int config_allowShutdown = 0;
   int config_stayOnTop = 0;
+  int config_instruNumber = 0;
   instrumentData config_screen;
+  std::vector<instrumentData *> m_instrumentData;
   int config_frameRate = 30;
   int config_dataRate = 10;
 };

@@ -14,7 +14,7 @@ class Configuration : public QMainWindow {
 
 public:
   explicit Configuration(QWidget *parent = 0);
-  void SetConfig(Config *p_config);
+  void SetConfig(Config &p_config);
   ~Configuration();
 
 private:
@@ -23,7 +23,7 @@ private:
   void paintEvent(QPaintEvent *event); //绘制事件
 
 signals:
-  void SendConfig(Config *p_config); //回传设置
+  void SendConfig(); //回传设置
 
 protected:
   void closeEvent(QCloseEvent *event);

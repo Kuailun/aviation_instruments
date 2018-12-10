@@ -16,14 +16,12 @@ void Instrument::paintEvent(QPaintEvent *event) {
     demo_x = 0;
   }
 
-  switch (m_instrument.type) {
+  switch (type) {
   case Instrument::InstrumentType::IS_Default:
     painter.fillRect(QRect(0, 13, this->width(), this->height() - 13),
                      QBrush(Qt::green));
-    painter.fillRect(QRect((demo_x + 0) * m_instrument.o2r_ratio,
-                           (demo_y + 13) * m_instrument.o2r_ratio,
-                           30 * m_instrument.o2r_ratio,
-                           30 * m_instrument.o2r_ratio),
+    painter.fillRect(QRect((demo_x + 0) * o2r_ratio, (demo_y + 13) * o2r_ratio,
+                           30 * o2r_ratio, 30 * o2r_ratio),
                      QBrush(Qt::blue));
     break;
   case Instrument::InstrumentType::IS_DefaultR:
@@ -72,44 +70,47 @@ void Instrument::mouseReleaseEvent(QMouseEvent *event) {
   (void)event;
   mMoving = false;
 
-  m_instrument.position_x = this->x();
-  m_instrument.position_y = this->y();
+  position_x = this->x();
+  position_y = this->y();
   emit UpdateXML();
 }
 // Wheel Event
 void Instrument::wheelEvent(QWheelEvent *event) {
   if (mMoving) {
-    if (event->delta() > 0 && m_instrument.o2r_ratio <= 4) {
-      m_instrument.o2r_ratio = m_instrument.o2r_ratio + 0.01;
-    } else if (event->delta() < 0 && m_instrument.o2r_ratio >= 0.5) {
-      m_instrument.o2r_ratio = m_instrument.o2r_ratio - 0.01;
+    if (event->delta() > 0 && o2r_ratio <= 4) {
+      o2r_ratio = o2r_ratio + 0.01;
+    } else if (event->delta() < 0 && o2r_ratio >= 0.5) {
+      o2r_ratio = o2r_ratio - 0.01;
     }
-    this->resize(this->m_instrument.original_width * m_instrument.o2r_ratio,
-                 this->m_instrument.original_height * m_instrument.o2r_ratio);
+    this->resize(this->original_width * o2r_ratio,
+                 this->original_height * o2r_ratio);
   }
 }
 void Instrument::SetDisplayMode(RunningMode rm) { this->m_runningMode = rm; }
 
 // Set variable to Instrument
-void Instrument::InitialInstrument(QString p_name, InstrumentType p_type,
-                                   int p_x, int p_y) {
-  this->m_instrument.type = p_type;
-  this->m_instrument.position_x = p_x;
-  this->m_instrument.position_y = p_y;
+void Instrument::InitialInstrument(int p_index) {
+  this->type = m_config->m_instrumentData[p_index]->type;
+  this->position_x = m_config->m_instrumentData[p_index]->position_x;
+  this->position_y = m_config->m_instrumentData[p_index]->position_y;
+  this->o2r_ratio = m_config->m_instrumentData[p_index]->o2r_ratio;
 
-  switch (p_type) {
+  switch (this->type) {
   case InstrumentType::IS_Default:
-    this->m_instrument.original_width = 500;
-    this->m_instrument.original_height = 500;
+    this->original_width = 500;
+    this->original_height = 500;
     break;
   case InstrumentType::IS_DefaultR:
-    this->m_instrument.original_width = 500;
-    this->m_instrument.original_height = 500;
+    this->original_width = 500;
+    this->original_height = 500;
     break;
   }
-  this->m_instrument.real_width =
-      this->m_instrument.o2r_ratio * this->m_instrument.original_width;
-  this->m_instrument.real_height =
-      this->m_instrument.o2r_ratio * this->m_instrument.original_height;
-  this->resize(m_instrument.real_width, m_instrument.real_height);
+  this->real_width = this->o2r_ratio * this->original_width;
+  this->real_height = this->o2r_ratio * this->original_height;
+  this->resize(real_width, real_height);
+}
+void Instrument::SetReferenceConfig(
+    const Config &p_data) // Set Data Reference for Config
+{
+  m_config = &p_data;
 }

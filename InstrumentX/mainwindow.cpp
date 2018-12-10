@@ -23,14 +23,15 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent) {
   // m_config = new Config(); // Initializing struct: config
 
   configuration = new Configuration(); // Initializing page: config
-  xmlcontrol = new XMLControl();       // Initializing class: xmlcontrol
+  configuration->SetConfig(m_config);
+  xmlcontrol = new XMLControl(); // Initializing class: xmlcontrol
   xmlcontrol->SetReferenceConfig(m_config);
   xmlcontrol->SetReferenceConfig(m_Instruments);
 
   xmlcontrol->ReadFile(); // Read data from XML
 
-  connect(configuration, SIGNAL(SendConfig(Config *)), this,
-          SLOT(ReceiveConfig(Config *))); //子窗体回传设置
+  connect(configuration, SIGNAL(SendConfig()), this,
+          SLOT(ReceiveConfig())); //子窗体回传设置
 
   SetTimmer();    // Set refresh frequency
   SetRightMenu(); // Set right mouse menu
@@ -41,13 +42,25 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent) {
                      this->m_config.config_screen.real_height));
   this->move(this->m_config.config_screen.position_x,
              this->m_config.config_screen.position_y);
+  SetInstrument(); // Restore Instrument;
 
-  debug = 1;
+  debug = 0;
   if (debug) {
+    instrumentData temp_data;
+    temp_data.type = 0;
+    temp_data.o2r_ratio = 1;
+    temp_data.position_x = 100;
+    temp_data.position_y = 100;
+    m_config.m_instrumentData.push_back(&temp_data);
+    prepareInstrument(100, 100, 0);
 
-    prepareInstrument(Instrument::InstrumentType::IS_Default, "Green", 100,
-                      100);
-    prepareInstrument(Instrument::InstrumentType::IS_DefaultR, "Red", 700, 100);
+    instrumentData temp_dataa;
+    temp_dataa.type = 1;
+    temp_dataa.o2r_ratio = 1;
+    temp_dataa.position_x = 700;
+    temp_dataa.position_y = 100;
+    m_config.m_instrumentData.push_back(&temp_dataa);
+    prepareInstrument(700, 100, 1);
 
   } else {
   }
@@ -165,24 +178,43 @@ void mainwindow::OpenConfiguration() {
   configuration->setWindowTitle("Configuration");
 
   configuration->show();
-  // configuration->SetConfig(m_config);
 }
-void mainwindow::ReceiveConfig(Config *p_config) {
+void mainwindow::ReceiveConfig() {
   // m_config = p_config;
-  // xmlcontrol->SetDataStruct(m_config); //更新XML数据
+  xmlcontrol->UpdateXML(); //更新XML数据
   SetTimmer();
 }
 // Set data to Instrument
-void mainwindow::prepareInstrument(Instrument::InstrumentType p_type,
-                                   QString p_name, int p_x, int p_y) {
+void mainwindow::prepareInstrument(int p_x, int p_y, int p_index) {
   Instrument *temp_instrument = new Instrument(this);
-  temp_instrument->InitialInstrument(p_name, p_type, p_x, p_y);
+  temp_instrument->SetReferenceConfig(m_config);
+  temp_instrument->InitialInstrument(p_index);
   temp_instrument->move(p_x, p_y);
   temp_instrument->show();
   connect(temp_instrument, SIGNAL(UpdateXML()), this,
           SLOT(UpdateXML())); // Update the XML File
   m_Instruments.push_back(temp_instrument);
+  m_config.config_instruNumber = m_Instruments.size();
 }
 void mainwindow::UpdateXML() {
   xmlcontrol->UpdateXML(); // Write XML Data
+}
+void mainwindow::SetInstrument() {
+  for (int i = 0; i < m_config.m_instrumentData.size(); i++) {
+    switch (m_config.m_instrumentData[i]->type) {
+    case 0:
+      prepareInstrument(m_config.m_instrumentData[i]->position_x,
+                        m_config.m_instrumentData[i]->position_y, i);
+      break;
+    case 1:
+      prepareInstrument(m_config.m_instrumentData[i]->position_x,
+                        m_config.m_instrumentData[i]->position_y, i);
+      break;
+    }
+  }
+}
+void mainwindow::closeEvent(QCloseEvent *event) {
+  (void)event;
+  bool ok;
+  UpdateXML();
 }

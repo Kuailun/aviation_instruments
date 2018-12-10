@@ -17,8 +17,8 @@ Configuration::Configuration(QWidget *parent)
 }
 
 Configuration::~Configuration() { delete ui; }
-void Configuration::SetConfig(Config *p_config) {
-  m_config = p_config;
+void Configuration::SetConfig(Config &p_config) {
+  m_config = &p_config;
 
   ui->configuration_server->setText(m_config->config_server);
   ui->configuration_datarate->setText(
@@ -33,7 +33,7 @@ void Configuration::closeEvent(QCloseEvent *event) {
   m_config->config_dataRate = ui->configuration_datarate->text().toInt(&ok, 10);
   m_config->config_frameRate =
       ui->configuration_framerate->text().toInt(&ok, 10);
-  emit SendConfig(m_config);
+  emit SendConfig();
 }
 void Configuration::paintEvent(QPaintEvent *event) {
   (void)event;

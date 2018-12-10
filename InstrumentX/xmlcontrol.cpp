@@ -9,6 +9,7 @@
 //======== ======== ======== ======== ======== ======== ======== ========
 
 #include "xmlcontrol.h"
+#include "printlog.h"
 
 XMLControl::XMLControl() {}
 void XMLControl::CreateFile(QString fileName) {
@@ -33,7 +34,9 @@ void XMLControl::WriteFile() {
   QString fileName = "config.xml";
   QFile file(fileName);
   if (!file.exists(fileName)) {
+    PrintLog(LogLevel::Info, "No Existing XML File"); // Log to the file
     CreateFile(fileName);
+    PrintLog(LogLevel::Info, "Creating XML File"); // Log to the file
   }
   file.open(QIODevice::WriteOnly);
   QXmlStreamWriter xmlWriter(&file);
@@ -104,34 +107,34 @@ void XMLControl::WriteFile() {
 
   // Instrument Data
   itemm = doc.createElement("instrument_number");
-  itemm.setAttribute("value", QString::number(m_instruments->size(), 10));
+  itemm.setAttribute("value",
+                     QString::number(m_config->config_instruNumber, 10));
   root.appendChild(itemm);
 
   // Instrument Data in details
   itemm = doc.createElement("instrument_details");
   for (int i = 0; i < m_instruments->size(); i++) {
-    itemmm = doc.createElement("instrument_" + QString::number(i, 10));
+    itemmm = doc.createElement("instrument");
     itemmm4 = doc.createElement("x");
-    textt = doc.createTextNode(QString::number(
-        (*m_instruments)[i]->GetInstrumentData().position_x, 10));
+    textt = doc.createTextNode(
+        QString::number((*m_instruments)[i]->position_x, 10));
     itemmm4.appendChild(textt);
     itemmm.appendChild(itemmm4);
 
     itemmm4 = doc.createElement("y");
-    textt = doc.createTextNode(QString::number(
-        (*m_instruments)[i]->GetInstrumentData().position_y, 10));
+    textt = doc.createTextNode(
+        QString::number((*m_instruments)[i]->position_y, 10));
     itemmm4.appendChild(textt);
     itemmm.appendChild(itemmm4);
 
     itemmm4 = doc.createElement("ratio");
-    textt = doc.createTextNode(QString::number(
-        (*m_instruments)[i]->GetInstrumentData().o2r_ratio, 10, 3));
+    textt = doc.createTextNode(
+        QString::number((*m_instruments)[i]->o2r_ratio, 10, 3));
     itemmm4.appendChild(textt);
     itemmm.appendChild(itemmm4);
 
     itemmm4 = doc.createElement("type");
-    textt = doc.createTextNode(
-        QString::number((*m_instruments)[i]->GetInstrumentData().type, 10));
+    textt = doc.createTextNode(QString::number((*m_instruments)[i]->type, 10));
     itemmm4.appendChild(textt);
     itemmm.appendChild(itemmm4);
 
@@ -159,7 +162,9 @@ Config XMLControl::ReadFile() {
 
   // If no existing file then create it
   if (!file.exists(fileName)) {
+    PrintLog(LogLevel::Info, "No Existing XML File"); // Log to the file
     CreateFile(fileName);
+    PrintLog(LogLevel::Info, "Creating XML File"); // Log to the file
     WriteFile();
   } else {
     // Read the file
@@ -256,6 +261,56 @@ Config XMLControl::ReadFile() {
               bool ok;
               m_config->config_dataRate =
                   tmpMap.item(i).nodeValue().toInt(&ok, 10);
+            }
+          }
+        } else if (e.nodeName() == "instrment_number") {
+          if (e.hasAttributes()) {
+            QDomNamedNodeMap tmpMap = e.attributes();
+            for (int i = 0; i < (int)tmpMap.size(); i++) {
+              bool ok;
+              m_config->config_instruNumber =
+                  tmpMap.item(i).nodeValue().toInt(&ok, 10);
+            }
+          }
+        } else if (e.nodeName() == "instrument_details") {
+          if (e.hasChildNodes()) {
+            QDomNode qd = e.firstChild();
+            while (!qd.isNull()) {
+              QDomElement ee = qd.toElement();
+              if (!ee.isNull()) {
+                if (ee.nodeName() == "instrument") {
+                  if (ee.hasChildNodes()) {
+                    QDomNodeList instrumentlist = ee.childNodes();
+                    instrumentData *temp_data = new instrumentData();
+                    for (int j = 0; j < (int)instrumentlist.size(); j++) {
+                      if (instrumentlist.at(j).toElement().tagName() == "x") {
+                        bool ok;
+                        temp_data->position_x =
+                            instrumentlist.at(j).toElement().text().toInt(&ok,
+                                                                          10);
+                      } else if (instrumentlist.at(j).toElement().tagName() ==
+                                 "y") {
+                        bool ok;
+                        temp_data->position_y =
+                            instrumentlist.at(j).toElement().text().toInt(&ok,
+                                                                          10);
+                      } else if (instrumentlist.at(j).toElement().tagName() ==
+                                 "ratio") {
+                        temp_data->o2r_ratio =
+                            instrumentlist.at(j).toElement().text().toDouble();
+                      } else if (instrumentlist.at(j).toElement().tagName() ==
+                                 "type") {
+                        bool ok;
+                        temp_data->type =
+                            instrumentlist.at(j).toElement().text().toInt(&ok,
+                                                                          10);
+                      }
+                    }
+                    m_config->m_instrumentData.push_back(temp_data);
+                  }
+                }
+              }
+              qd = qd.nextSiblingElement();
             }
           }
         }

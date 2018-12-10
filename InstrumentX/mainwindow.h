@@ -17,12 +17,12 @@ public:
 signals:
 
 private slots:
-  void ChangeDisplayMode();             //变换显示模式
-  void ChangeTitleBar();                //变换标题栏
-  void ChangeFullScreen();              //变换全屏模式
-  void OpenConfiguration();             //打开设置界面
-  void ReceiveConfig(Config *p_config); //更新设置
-  void UpdateXML();                     // Update the XML file
+  void ChangeDisplayMode(); //变换显示模式
+  void ChangeTitleBar();    //变换标题栏
+  void ChangeFullScreen();  //变换全屏模式
+  void OpenConfiguration(); //打开设置界面
+  void ReceiveConfig();     //更新设置
+  void UpdateXML();         // Update the XML file
 private:
   //数据区域
   Config m_config;
@@ -46,9 +46,12 @@ private:
   void moveEvent(QMoveEvent *event);     //移动窗口事件
   void SetRightMenu();                   //设置鼠标右键菜单
   void SetTimmer();                      //设置重绘时钟
+  void SetInstrument();                  // Restore Instrument
   void keyPressEvent(QKeyEvent *event);  //快捷键设置
-  void prepareInstrument(Instrument::InstrumentType p_type, QString p_name,
-                         int p_x, int p_y);
+  void prepareInstrument(int p_x, int p_y, int p_index);
+
+protected:
+  void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H
