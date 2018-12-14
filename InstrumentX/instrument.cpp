@@ -2,7 +2,6 @@
 
 Instrument::Instrument(QWidget *parent) : QDialog(parent) {
   setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
-
   hide();
 }
 
@@ -39,7 +38,11 @@ void Instrument::paintEvent(QPaintEvent *event) {
     QFont font = painter.font();
     font.setPointSize(10);
     painter.setFont(font);
-    painter.drawText(QPoint(0, 10), m_instrumentName);
+    QString str;
+    str = str.append(m_instrumentName);
+    str = str.append("-");
+    str = str.append(QString::number(id, 10));
+    painter.drawText(QPoint(0, 10), str);
   }
 }
 
@@ -89,22 +92,15 @@ void Instrument::wheelEvent(QWheelEvent *event) {
 void Instrument::SetDisplayMode(RunningMode rm) { this->m_runningMode = rm; }
 
 // Set variable to Instrument
-void Instrument::InitialInstrument(int p_index) {
+void Instrument::InitialInstrument(int p_index, int p_width, int p_height) {
   this->type = m_config->m_instrumentData[p_index]->type;
   this->position_x = m_config->m_instrumentData[p_index]->position_x;
   this->position_y = m_config->m_instrumentData[p_index]->position_y;
   this->o2r_ratio = m_config->m_instrumentData[p_index]->o2r_ratio;
 
-  switch (this->type) {
-  case InstrumentType::IS_Default:
-    this->original_width = 500;
-    this->original_height = 500;
-    break;
-  case InstrumentType::IS_DefaultR:
-    this->original_width = 500;
-    this->original_height = 500;
-    break;
-  }
+  this->original_width = p_width;
+  this->original_height = p_height;
+
   this->real_width = this->o2r_ratio * this->original_width;
   this->real_height = this->o2r_ratio * this->original_height;
   this->resize(real_width, real_height);
@@ -114,3 +110,9 @@ void Instrument::SetReferenceConfig(
 {
   m_config = &p_data;
 }
+void Instrument::mouseDoubleClickEvent(QMouseEvent *event) {
+  (void)event;
+  Destroy();
+  emit DestroyInstrument(this->id);
+}
+void Instrument::Destroy() {}

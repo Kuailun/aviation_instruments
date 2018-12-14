@@ -3,6 +3,7 @@
 
 #include "configuration.h"
 #include "instrument.h"
+#include "instrumentwindow.h"
 #include "printlog.h"
 #include "xmlcontrol.h"
 #include <QMainWindow>
@@ -21,18 +22,24 @@ private slots:
   void ChangeTitleBar();    //变换标题栏
   void ChangeFullScreen();  //变换全屏模式
   void OpenConfiguration(); //打开设置界面
+  void OpenWindows();       // Open windows page
   void ReceiveConfig();     //更新设置
   void UpdateXML();         // Update the XML file
+  void DestroyIS(int p_id); // Destroy the Instrument
 private:
   //数据区域
   Config m_config;
   std::vector<Instrument *> m_Instruments;
+#define types 2
+  QString Namelist[types];
+  instrumentData Datalist[types];
   // XML记录+显示变量区
   XMLControl *xmlcontrol; // XML读写类
 
   //内部变量区
 
   Configuration *configuration;
+  InstrumentWindow *instrumentwindow;
   int debug = 0;            // 0=Running，1=Debugging
   int mode = 0;             // 0=RunningMode::Running，1=RunningMode::Setting
   bool initialized = false; // Flag, whether initialization is finished
@@ -49,6 +56,8 @@ private:
   void SetInstrument();                  // Restore Instrument
   void keyPressEvent(QKeyEvent *event);  //快捷键设置
   void prepareInstrument(int p_x, int p_y, int p_index);
+  void initialData();  // Initial Instrument base data
+  void UpdateWindow(); // Update data in window
 
 protected:
   void closeEvent(QCloseEvent *event);

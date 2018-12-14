@@ -30,7 +30,8 @@ SOURCES += \
     datastruct.cpp \
     xmlcontrol.cpp \
     configuration.cpp \
-    printlog.cpp
+    printlog.cpp \
+    instrumentwindow.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -38,8 +39,10 @@ HEADERS += \
     datastruct.h \
     xmlcontrol.h \
     configuration.h \
-    printlog.h
+    printlog.h \
+    instrumentwindow.h
 
 FORMS += \
         mainwindow.ui \
-    configuration.ui
+    configuration.ui \
+    instrumentwindow.ui
