@@ -1,3 +1,5 @@
+
+
 #ifndef Instrument_H
 #define Instrument_H
 
@@ -23,8 +25,10 @@ public:
   void InitialInstrument(int p_index, int p_width, int p_height);
   void
   SetReferenceConfig(const Config &p_data); // Set Data Reference for Config
-  void SetID(int p_id) { this->id = p_id; } // Set Instrument ID
-  int GetID() { return this->id; }          // Get Instrument ID
+  void
+  SetDisplayData(const DisplayData &p_data); // Set Data Reference for Display
+  void SetID(int p_id) { this->id = p_id; }  // Set Instrument ID
+  int GetID() { return this->id; }           // Get Instrument ID
   void SetName(QString p_name) { this->m_instrumentName = p_name; }
   QString GetName() { return this->m_instrumentName; } // Get Instrument Name
   void Destroy(); // Destroy and close Instrument;
@@ -47,16 +51,20 @@ private:
   bool mMoving = false;
   QPoint mMovePosition;
   const Config *m_config;
+  const DisplayData *m_displaydata;
 
   int m_runningMode = RunningMode::Running; // Running mode
   QString m_instrumentName = "Default";     // Window title
-  int demo_x = 0;
-  int demo_y = 0;
   int original_width = 1000;
   int original_height = 1000;
   int real_width = 1000;
   int real_height = 1013;
   int id = -1;
+
+  inline int X(int p_x) { return p_x * o2r_ratio; }
+  inline int Y(int p_y) { return p_y * o2r_ratio + 13; }
+  inline int W(int p_w) { return (original_width - p_w) * o2r_ratio; }
+  inline int H(int p_h) { return (original_height - p_h) * o2r_ratio; }
 
 signals:
   void UpdateXML();                 // Update the XML File

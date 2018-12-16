@@ -10,22 +10,20 @@ void Instrument::paintEvent(QPaintEvent *event) {
   (void)event;
   QPainter painter(this);
 
-  demo_x++;
-  if (demo_x >= 100) {
-    demo_x = 0;
-  }
-
   switch (type) {
-  case Instrument::InstrumentType::IS_Default:
-    painter.fillRect(QRect(0, 13, this->width(), this->height() - 13),
-                     QBrush(Qt::green));
-    painter.fillRect(QRect((demo_x + 0) * o2r_ratio, (demo_y + 13) * o2r_ratio,
+  case Instrument::InstrumentType::IS_Default: {
+    painter.fillRect(QRect(X(0), Y(0), W(0), H(0)), QBrush(Qt::green));
+    painter.fillRect(QRect(X(m_displaydata->demo_x), Y(m_displaydata->demo_y),
                            30 * o2r_ratio, 30 * o2r_ratio),
                      QBrush(Qt::blue));
+    int x = X(m_displaydata->demo_x);
+    int y = Y(m_displaydata->demo_y);
+    int w = W(0);
+    int h = H(0);
     break;
+  }
   case Instrument::InstrumentType::IS_DefaultR:
-    painter.fillRect(QRect(0, 13, this->width(), this->height() - 13),
-                     QBrush(Qt::red));
+    painter.fillRect(QRect(X(0), Y(0), W(0), H(0)), QBrush(Qt::red));
     break;
   }
 
@@ -85,30 +83,34 @@ void Instrument::wheelEvent(QWheelEvent *event) {
     } else if (event->delta() < 0 && o2r_ratio >= 0.5) {
       o2r_ratio = o2r_ratio - 0.01;
     }
-    this->resize(this->original_width * o2r_ratio,
-                 this->original_height * o2r_ratio);
+    this->real_width = o2r_ratio * original_width;
+    this->real_height = o2r_ratio * original_height + 13;
+    this->resize(real_width, real_height);
   }
 }
 void Instrument::SetDisplayMode(RunningMode rm) { this->m_runningMode = rm; }
 
 // Set variable to Instrument
 void Instrument::InitialInstrument(int p_index, int p_width, int p_height) {
-  this->type = m_config->m_instrumentData[p_index]->type;
-  this->position_x = m_config->m_instrumentData[p_index]->position_x;
-  this->position_y = m_config->m_instrumentData[p_index]->position_y;
-  this->o2r_ratio = m_config->m_instrumentData[p_index]->o2r_ratio;
+  this->type = m_config->m_instrumentData[id]->type;
+  this->position_x = m_config->m_instrumentData[id]->position_x;
+  this->position_y = m_config->m_instrumentData[id]->position_y;
+  this->o2r_ratio = m_config->m_instrumentData[id]->o2r_ratio;
 
   this->original_width = p_width;
   this->original_height = p_height;
 
-  this->real_width = this->o2r_ratio * this->original_width;
-  this->real_height = this->o2r_ratio * this->original_height;
+  this->real_width = o2r_ratio * original_width;
+  this->real_height = o2r_ratio * original_height + 13;
   this->resize(real_width, real_height);
 }
 void Instrument::SetReferenceConfig(
     const Config &p_data) // Set Data Reference for Config
 {
   m_config = &p_data;
+}
+void Instrument::SetDisplayData(const DisplayData &p_data) {
+  m_displaydata = &p_data;
 }
 void Instrument::mouseDoubleClickEvent(QMouseEvent *event) {
   (void)event;

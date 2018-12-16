@@ -27,4 +27,9 @@ struct Config {
   int config_dataRate = 10;
 };
 
+struct DisplayData {
+  double demo_x = 0; // data for test
+  double demo_y = 0; // data for test
+};
+
 #endif // DATASTRUCT_H
