@@ -7,6 +7,7 @@
 QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+                                  QT += network
 
 TARGET = aviation_instruments
 TEMPLATE = app
@@ -31,7 +32,8 @@ SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp \
     src/printlog.cpp \
-    src/xmlcontrol.cpp
+    src/xmlcontrol.cpp \
+    src/msocket.cpp
 
 HEADERS += \
     include/configuration.h \
@@ -40,9 +42,11 @@ HEADERS += \
     include/instrumentwindow.h \
     include/mainwindow.h \
     include/printlog.h \
-    include/xmlcontrol.h
+    include/xmlcontrol.h \
+    include/msocket.h
 
 FORMS += \
     ui/configuration.ui \
     ui/instrumentwindow.ui \
-    ui/mainwindow.ui
+    ui/mainwindow.ui \
+    ui/msocket.ui

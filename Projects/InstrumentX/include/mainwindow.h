@@ -4,6 +4,7 @@
 #include "configuration.h"
 #include "instrument.h"
 #include "instrumentwindow.h"
+#include "msocket.h"
 #include "printlog.h"
 #include "xmlcontrol.h"
 #include <QMainWindow>
@@ -45,6 +46,8 @@ private:
 
   Configuration *configuration;
   InstrumentWindow *instrumentwindow;
+  mSocket *m_socket;
+
   int debug = 0;            // 0=Running，1=Debugging
   int mode = 0;             // 0=RunningMode::Running，1=RunningMode::Setting
   bool initialized = false; // Flag, whether initialization is finished

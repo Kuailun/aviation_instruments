@@ -20,6 +20,9 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent) {
 
   //===== ===== ===== ===== ===== Initializing ===== ===== ===== ===== ===== //
   this->setWindowTitle("FYCYC-Aviation Instruments X"); // Set window title
+  QPainter painter(this);
+  painter.setRenderHint(QPainter::Antialiasing);
+  painter.setRenderHint(QPainter::TextAntialiasing);
 
   initialData();
 
@@ -29,6 +32,8 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent) {
   xmlcontrol->SetReferenceConfig(m_config);
   xmlcontrol->SetReferenceConfig(m_Instruments);
   instrumentwindow = new InstrumentWindow(); // Initillizing page: window
+  m_socket = new mSocket();
+  m_socket->SetConfig(m_config);
 
   xmlcontrol->ReadFile(); // Read data from XML
 
@@ -38,7 +43,10 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent) {
           SLOT(ReceiveCommand(int, int))); // Receive data from page
 
   SetTimmer_Display(); // Set refresh frequency
-  SetRightMenu();      // Set right mouse menu
+  m_socket->SetDisplayData(m_displaydata_new, m_displaydata_last,
+                           m_calculated_displaydata);
+  m_socket->SetInterval(static_cast<int>(m_config.config_frameRate / 10));
+  SetRightMenu(); // Set right mouse menu
 
   initialized = true; // Initialization is finished.
 
@@ -50,6 +58,8 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent) {
 }
 void mainwindow::paintEvent(QPaintEvent *event) {
   (void)event; //去掉报警信息
+
+  m_socket->Process();
 
   QPainter painter(this);
   //设置背景颜色
@@ -105,13 +115,13 @@ void mainwindow::ChangeDisplayMode() {
 
   switch (mode) {
   case 0: {
-    for (int i = 0; i < m_Instruments.size(); i++) {
+    for (int i = 0; i < static_cast<int>(m_Instruments.size()); i++) {
       (*iter)->SetDisplayMode(Instrument::RunningMode::Running);
       iter++;
     }
   } break;
   case 1: {
-    for (int i = 0; i < m_Instruments.size(); i++) {
+    for (int i = 0; i < static_cast<int>(m_Instruments.size()); i++) {
       (*iter)->SetDisplayMode(Instrument::RunningMode::Setting);
       iter++;
     }
@@ -148,7 +158,7 @@ void mainwindow::SetTimmer_Display() {
   }
   timer_display = new QTimer(this);
   connect(timer_display, SIGNAL(timeout()), this, SLOT(update()));
-  timer_display->start((int)(1000 / m_config.config_frameRate));
+  timer_display->start(static_cast<int>((1000 / m_config.config_frameRate)));
 }
 void mainwindow::keyPressEvent(QKeyEvent *event) {
   if (Qt::Key_F12 == event->key()) {
@@ -174,9 +184,9 @@ void mainwindow::OpenWindows() {
   instrumentwindow->show();
 }
 void mainwindow::ReceiveConfig() {
-  // m_config = p_config;
   xmlcontrol->UpdateXML(); //更新XML数据
   SetTimmer_Display();
+  m_socket->SetInterval(m_config.config_frameRate / 10);
 }
 void mainwindow::ReceiveCommand(int p_func, int p_index) {
   switch (p_func) {
@@ -189,7 +199,7 @@ void mainwindow::ReceiveCommand(int p_func, int p_index) {
     temp_data->position_y = 100;
     m_config.m_instrumentData.push_back(temp_data);
     prepareInstrument(temp_data->position_x, temp_data->position_y,
-                      m_Instruments.size());
+                      static_cast<int>(m_Instruments.size()));
   } break;
   case 1: // delete
     DestroyIS(p_index);
@@ -207,7 +217,7 @@ void mainwindow::prepareInstrument(int p_x, int p_y, int p_index) {
   int type = m_config.m_instrumentData[p_index]->type;
   temp_instrument->SetReferenceConfig(m_config);
   temp_instrument->SetDisplayData(m_calculated_displaydata);
-  temp_instrument->SetID(m_Instruments.size());
+  temp_instrument->SetID(static_cast<int>(m_Instruments.size()));
   temp_instrument->InitialInstrument(type, Datalist[type].original_width,
                                      Datalist[type].original_height);
   temp_instrument->SetName(Namelist[type]);
@@ -219,7 +229,7 @@ void mainwindow::prepareInstrument(int p_x, int p_y, int p_index) {
   connect(temp_instrument, SIGNAL(DestroyInstrument(int)), this,
           SLOT(DestroyIS(int))); // Destroy Instrument
   m_Instruments.push_back(temp_instrument);
-  m_config.config_instruNumber = m_Instruments.size();
+  m_config.config_instruNumber = static_cast<int>(m_Instruments.size());
   UpdateWindow();
 }
 void mainwindow::UpdateXML() {
@@ -239,7 +249,8 @@ void mainwindow::DestroyIS(int p_id) {
   m_config.m_instrumentData.erase(m_config.m_instrumentData.begin() +
                                   m_config.m_instrumentData.size() - 1);
   UpdateWindow();
-  m_config.config_instruNumber = m_config.m_instrumentData.size();
+  m_config.config_instruNumber =
+      static_cast<int>(m_config.m_instrumentData.size());
   xmlcontrol->UpdateXML(); // Write XML Data
 }
 void mainwindow::SetInstrument() {
@@ -258,7 +269,6 @@ void mainwindow::SetInstrument() {
 }
 void mainwindow::closeEvent(QCloseEvent *event) {
   (void)event;
-  bool ok;
   UpdateXML();
 
   configuration->hide();

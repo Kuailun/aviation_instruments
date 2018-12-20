@@ -61,10 +61,14 @@ private:
   int real_height = 1013;
   int id = -1;
 
-  inline int X(int p_x) { return p_x * o2r_ratio; }
-  inline int Y(int p_y) { return p_y * o2r_ratio + 13; }
-  inline int W(int p_w) { return (original_width - p_w) * o2r_ratio; }
-  inline int H(int p_h) { return (original_height - p_h) * o2r_ratio; }
+  inline int X(double p_x) { return static_cast<int>(p_x * o2r_ratio); }
+  inline int Y(double p_y) { return static_cast<int>(p_y * o2r_ratio + 13); }
+  inline int W(double p_w) {
+    return static_cast<int>((original_width - p_w) * o2r_ratio);
+  }
+  inline int H(double p_h) {
+    return static_cast<int>((original_height - p_h) * o2r_ratio);
+  }
 
 signals:
   void UpdateXML();                 // Update the XML File

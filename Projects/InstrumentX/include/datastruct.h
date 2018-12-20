@@ -32,4 +32,9 @@ struct DisplayData {
   double demo_y = 0; // data for test
 };
 
+struct ReceiveData {
+  double degree_pitch = 0;
+  double degree_bank = 0;
+};
+
 #endif // DATASTRUCT_H

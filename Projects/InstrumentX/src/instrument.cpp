@@ -13,13 +13,15 @@ void Instrument::paintEvent(QPaintEvent *event) {
   switch (type) {
   case Instrument::InstrumentType::IS_Default: {
     painter.fillRect(QRect(X(0), Y(0), W(0), H(0)), QBrush(Qt::green));
-    painter.fillRect(QRect(X(m_displaydata->demo_x), Y(m_displaydata->demo_y),
-                           30 * o2r_ratio, 30 * o2r_ratio),
+    painter.fillRect(QRect(static_cast<int>(X(m_displaydata->demo_x)),
+                           static_cast<int>(Y(m_displaydata->demo_y)),
+                           static_cast<int>(30 * o2r_ratio),
+                           static_cast<int>(30 * o2r_ratio)),
                      QBrush(Qt::blue));
-    int x = X(m_displaydata->demo_x);
-    int y = Y(m_displaydata->demo_y);
-    int w = W(0);
-    int h = H(0);
+    // int x = X(m_displaydata->demo_x);
+    // int y = Y(m_displaydata->demo_y);
+    // int w = W(0);
+    // int h = H(0);
     break;
   }
   case Instrument::InstrumentType::IS_DefaultR:
@@ -83,8 +85,8 @@ void Instrument::wheelEvent(QWheelEvent *event) {
     } else if (event->delta() < 0 && o2r_ratio >= 0.5) {
       o2r_ratio = o2r_ratio - 0.01;
     }
-    this->real_width = o2r_ratio * original_width;
-    this->real_height = o2r_ratio * original_height + 13;
+    this->real_width = static_cast<int>(o2r_ratio * original_width);
+    this->real_height = static_cast<int>(o2r_ratio * original_height + 13);
     this->resize(real_width, real_height);
   }
 }
@@ -92,6 +94,7 @@ void Instrument::SetDisplayMode(RunningMode rm) { this->m_runningMode = rm; }
 
 // Set variable to Instrument
 void Instrument::InitialInstrument(int p_index, int p_width, int p_height) {
+  p_index = 0; // silence the warning
   this->type = m_config->m_instrumentData[id]->type;
   this->position_x = m_config->m_instrumentData[id]->position_x;
   this->position_y = m_config->m_instrumentData[id]->position_y;
@@ -100,8 +103,8 @@ void Instrument::InitialInstrument(int p_index, int p_width, int p_height) {
   this->original_width = p_width;
   this->original_height = p_height;
 
-  this->real_width = o2r_ratio * original_width;
-  this->real_height = o2r_ratio * original_height + 13;
+  this->real_width = static_cast<int>(o2r_ratio * original_width);
+  this->real_height = static_cast<int>(o2r_ratio * original_height + 13);
   this->resize(real_width, real_height);
 }
 void Instrument::SetReferenceConfig(
