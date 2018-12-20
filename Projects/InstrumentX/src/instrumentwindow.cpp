@@ -1,4 +1,4 @@
-#include "instrumentwindow.h"
+#include "./include/instrumentwindow.h"
 #include "ui_instrumentwindow.h"
 #include <QPainter>
 #include <QStringListModel>

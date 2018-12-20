@@ -1,4 +1,4 @@
-﻿#include "instrument.h"
+﻿#include "./include/instrument.h"
 
 Instrument::Instrument(QWidget *parent) : QDialog(parent) {
   setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);

@@ -8,8 +8,8 @@
 /// prohibited 		Proprietary and confidential
 //======== ======== ======== ======== ======== ======== ======== ========
 
-#include "xmlcontrol.h"
-#include "printlog.h"
+#include "./include/xmlcontrol.h"
+#include "./include/printlog.h"
 
 XMLControl::XMLControl() {}
 void XMLControl::CreateFile(QString fileName) {

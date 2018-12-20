@@ -3,13 +3,13 @@
 #ifndef Instrument_H
 #define Instrument_H
 
+#include "./include/datastruct.h"
 #include <QAction>
 #include <QApplication>
 #include <QDebug>
 #include <QDialog>
 #include <QMouseEvent>
 #include <QPainter>
-#include <datastruct.h>
 
 class Instrument : public QDialog {
   Q_OBJECT

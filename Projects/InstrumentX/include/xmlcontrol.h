@@ -1,13 +1,13 @@
 #ifndef XMLCONTROL_H
 #define XMLCONTROL_H
-#include "datastruct.h"
+#include "./include/datastruct.h"
+#include <./include/instrument.h>
 #include <QDebug>
 #include <QFile>
 #include <QString>
 #include <QTextStream>
 #include <QXmlStreamWriter>
 #include <QtXml/QDomDocument>
-#include <instrument.h>
 
 class XMLControl {
 public:

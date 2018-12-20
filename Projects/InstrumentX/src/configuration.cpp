@@ -7,7 +7,7 @@
 ///		Unauthorized copying of this file, via any medium is strictly
 /// prohibited 		Proprietary and confidential
 //======== ======== ======== ======== ======== ======== ======== ========
-#include "configuration.h"
+#include "./include/configuration.h"
 #include "ui_configuration.h"
 
 Configuration::Configuration(QWidget *parent)

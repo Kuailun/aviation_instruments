@@ -24,25 +24,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-    mainwindow.cpp \
-    instrument.cpp \
-    datastruct.cpp \
-    xmlcontrol.cpp \
-    configuration.cpp \
-    printlog.cpp \
-    instrumentwindow.cpp
+    src/configuration.cpp \
+    src/datastruct.cpp \
+    src/instrument.cpp \
+    src/instrumentwindow.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/printlog.cpp \
+    src/xmlcontrol.cpp
 
 HEADERS += \
-    mainwindow.h \
-    instrument.h \
-    datastruct.h \
-    xmlcontrol.h \
-    configuration.h \
-    printlog.h \
-    instrumentwindow.h
+    include/configuration.h \
+    include/datastruct.h \
+    include/instrument.h \
+    include/instrumentwindow.h \
+    include/mainwindow.h \
+    include/printlog.h \
+    include/xmlcontrol.h
 
 FORMS += \
-        mainwindow.ui \
-    configuration.ui \
-    instrumentwindow.ui
+    ui/configuration.ui \
+    ui/instrumentwindow.ui \
+    ui/mainwindow.ui

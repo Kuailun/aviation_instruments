@@ -8,8 +8,8 @@
 /// prohibited 		Proprietary and confidential
 //======== ======== ======== ======== ======== ======== ======== ========
 
-#include "mainwindow.h"
-#include "instrument.h"
+#include "./include/mainwindow.h"
+#include "./include/instrument.h"
 #include <QDebug>
 #include <QKeyEvent>
 #include <QTimer>
@@ -312,7 +312,6 @@ void mainwindow::UpdateWindow() {
   // instrumentwindow->show();
 }
 void mainwindow::GetDisplayData() {
-  count++;
   m_displaydata_last.demo_x = m_displaydata_new.demo_x;
   m_displaydata_last.demo_y = m_displaydata_new.demo_y;
 

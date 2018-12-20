@@ -11,8 +11,8 @@
 #ifndef INSTRUMENTWINDOW_H
 #define INSTRUMENTWINDOW_H
 
+#include "./include/instrument.h"
 #include <QWidget>
-#include <instrument.h>
 
 namespace Ui {
 class InstrumentWindow;
