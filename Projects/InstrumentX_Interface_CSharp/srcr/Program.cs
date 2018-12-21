@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace InstrumentX_Interface_CSharp
 {
-    /*class Program
+    class Program
     {
          static void Main(string[] args)
          {
@@ -33,5 +33,5 @@ namespace InstrumentX_Interface_CSharp
             }
             instrumentX_Interface.Stop();
         }
-    }*/
+    }
 }

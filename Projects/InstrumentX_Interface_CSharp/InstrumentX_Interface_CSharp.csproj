@@ -64,9 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InstrumentX_Data.cs" />
-    <Compile Include="InstrumentX_Interface.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="source\InstrumentX_Data.cs" />
+    <Compile Include="source\InstrumentX_Interface.cs" />
+    <Compile Include="source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
