@@ -264,6 +264,10 @@ void mainwindow::SetInstrument() {
       prepareInstrument(m_config.m_instrumentData[i]->position_x,
                         m_config.m_instrumentData[i]->position_y, i);
       break;
+    case 2:
+      prepareInstrument(m_config.m_instrumentData[i]->position_x,
+                        m_config.m_instrumentData[i]->position_y, i);
+      break;
     }
   }
 }
@@ -281,6 +285,7 @@ void mainwindow::closeEvent(QCloseEvent *event) {
 void mainwindow::initialData() {
   Namelist[0] = "IS_Default";
   Namelist[1] = "IS_DefaultR";
+  Namelist[2] = "IS_SpeedIndicator";
 
   Datalist[0].o2r_ratio = 1;
   Datalist[0].original_width = 1500;
@@ -291,6 +296,11 @@ void mainwindow::initialData() {
   Datalist[1].original_width = 1500;
   Datalist[1].original_height = 1500;
   Datalist[1].type = 0;
+
+  Datalist[2].o2r_ratio = 1;
+  Datalist[2].original_width = 500;
+  Datalist[2].original_height = 500;
+  Datalist[2].type = 0;
 }
 void mainwindow::UpdateWindow() {
   QStringList m_list_Exist;

@@ -30,11 +30,13 @@ struct Config {
 struct DisplayData {
   double demo_x = 0; // data for test
   double demo_y = 0; // data for test
+  double Speed_Indicator_Speed = 0;
 };
 
 struct ReceiveData {
   double degree_pitch = 0;
   double degree_bank = 0;
+  double Speed_Indicator_Speed = 0;
 };
 
 #endif // DATASTRUCT_H

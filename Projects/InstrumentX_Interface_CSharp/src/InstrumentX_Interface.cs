@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace InstrumentX_Interface_CSharp
 {
-    class InstrumentX_Interface
+    public class InstrumentX_Interface
     {
         private static Socket sock;
         private static IPEndPoint iep1;

@@ -50,3 +50,6 @@ FORMS += \
     ui/instrumentwindow.ui \
     ui/mainwindow.ui \
     ui/msocket.ui
+
+RESOURCES += \
+    resource/resource.qrc

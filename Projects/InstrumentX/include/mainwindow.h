@@ -36,7 +36,7 @@ private:
   DisplayData m_displaydata_new;
   DisplayData m_displaydata_last;
   DisplayData m_calculated_displaydata;
-#define types 2
+#define types 3
   QString Namelist[types];
   instrumentData Datalist[types];
   // XML记录+显示变量区

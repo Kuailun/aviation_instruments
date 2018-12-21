@@ -18,15 +18,25 @@ void Instrument::paintEvent(QPaintEvent *event) {
                            static_cast<int>(30 * o2r_ratio),
                            static_cast<int>(30 * o2r_ratio)),
                      QBrush(Qt::blue));
-    // int x = X(m_displaydata->demo_x);
-    // int y = Y(m_displaydata->demo_y);
-    // int w = W(0);
-    // int h = H(0);
     break;
   }
   case Instrument::InstrumentType::IS_DefaultR:
     painter.fillRect(QRect(X(0), Y(0), W(0), H(0)), QBrush(Qt::red));
     break;
+
+  case Instrument::InstrumentType::IS_SpeedIndicator: {
+    painter.drawImage(QRect(X(0), Y(0), W(0), H(0)),
+                      QImage(":/image/image/Speed_Indicator.png"));
+
+    painter.save();
+    QPixmap pix(":/image/image/Indicator.png");
+    painter.translate(X(250), Y(250));
+    painter.rotate(m_displaydata->Speed_Indicator_Speed);
+    painter.translate(X(-250), Y(-250));
+    painter.drawPixmap(X(237), Y(0), Wi(25), H(0), pix);
+    painter.restore();
+    break;
+  }
   }
 
   // if in the setting mode

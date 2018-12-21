@@ -19,7 +19,7 @@ public:
   ~Instrument();
 
   enum RunningMode { Running, Setting };
-  enum InstrumentType { IS_Default, IS_DefaultR };
+  enum InstrumentType { IS_Default, IS_DefaultR, IS_SpeedIndicator };
 
   void SetDisplayMode(RunningMode rm); // Set running mode
   void InitialInstrument(int p_index, int p_width, int p_height);
@@ -55,10 +55,10 @@ private:
 
   int m_runningMode = RunningMode::Running; // Running mode
   QString m_instrumentName = "Default";     // Window title
-  int original_width = 1000;
-  int original_height = 1000;
-  int real_width = 1000;
-  int real_height = 1013;
+  int original_width = 1500;
+  int original_height = 1500;
+  int real_width = 1500;
+  int real_height = 1513;
   int id = -1;
 
   inline int X(double p_x) { return static_cast<int>(p_x * o2r_ratio); }
@@ -69,6 +69,8 @@ private:
   inline int H(double p_h) {
     return static_cast<int>((original_height - p_h) * o2r_ratio);
   }
+  inline int Wi(double p_w) { return static_cast<int>(p_w * o2r_ratio); }
+  inline int Hi(double p_h) { return static_cast<int>(p_h * o2r_ratio); }
 
 signals:
   void UpdateXML();                 // Update the XML File

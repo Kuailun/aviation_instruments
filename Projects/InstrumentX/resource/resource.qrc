@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>image/Speed_Indicator.png</file>
+        <file>image/Indicator.png</file>
+    </qresource>
+</RCC>
